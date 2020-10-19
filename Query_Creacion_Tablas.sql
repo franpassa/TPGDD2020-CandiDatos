@@ -1,6 +1,9 @@
+use TPGDD2C2020
+
+
 CREATE TABLE Automovil
 ( 
-	c_automovil          decimal(18,0)  NOT NULL ,
+	c_automovil          decimal(18,0) IDENTITY ( 1,1 ) ,
 	d_patente            nvarchar(50)  NULL ,
 	f_alta               datetime2(3)  NULL ,
 	n_kilometraje        decimal(18,0)  NULL ,
@@ -41,7 +44,7 @@ go
 
 CREATE TABLE Categoría_Rubro
 ( 
-	c_rubro              decimal(18,0)  NOT NULL ,
+	c_rubro              decimal(18,0) IDENTITY ( 1,1 ) ,
 	d_rubro              nvarchar(255)  NULL 
 )
 go
@@ -56,7 +59,7 @@ go
 
 CREATE TABLE Cliente
 ( 
-	c_cliente            decimal(18,0)  NOT NULL ,
+	c_cliente            decimal(18,0) IDENTITY ( 1,1 ) ,
 	d_apellido           nvarchar(255)  NULL ,
 	d_nombre             nvarchar(255)  NULL ,
 	n_dni                decimal(18,0)  NULL ,
@@ -103,7 +106,7 @@ go
 
 CREATE TABLE Item_automovil_compra
 ( 
-	c_item_automovil_compra decimal(18,0)  NOT NULL ,
+	c_item_automovil_compra decimal(18,0) IDENTITY ( 1,1 ) ,
 	c_compra             decimal(18,0)  NOT NULL ,
 	n_importe            decimal(18,2)  NULL ,
 	c_autoparte          decimal(18,0)  NULL 
@@ -121,7 +124,7 @@ go
 CREATE TABLE Item_automovil_venta
 ( 
 	n_importe            decimal(18,2)  NULL ,
-	c_item_automovil_venta decimal(18,0)  NOT NULL ,
+	c_item_automovil_venta decimal(18,0) IDENTITY ( 1,1 ) ,
 	c_automovil          decimal(18,0)  NULL ,
 	c_venta              decimal(18,0)  NOT NULL 
 )
@@ -137,7 +140,7 @@ go
 
 CREATE TABLE Item_autoparte_compra
 ( 
-	c_item_autoparte_compra decimal(18,0)  NOT NULL ,
+	c_item_autoparte_compra decimal(18,0) IDENTITY ( 1,1 ) ,
 	c_compra             decimal(18,0)  NOT NULL ,
 	n_importe            decimal(18,2)  NULL ,
 	n_cantidad           decimal(18,0)  NULL ,
@@ -156,7 +159,7 @@ go
 CREATE TABLE Item_autoparte_venta
 ( 
 	n_importe            decimal(18,2)  NULL ,
-	c_item_autoparte_venta decimal(18,0)  NOT NULL ,
+	c_item_autoparte_venta decimal(18,0) IDENTITY ( 1,1 ) ,
 	n_cantidad           decimal(18,0)  NULL ,
 	c_autoparte          decimal(18,0)  NULL ,
 	c_venta              decimal(18,0)  NOT NULL 
@@ -212,7 +215,7 @@ go
 
 CREATE TABLE Stock_Sucursal
 ( 
-	c_sucursal           decimal(18,0)  NOT NULL ,
+	c_sucursal           decimal(18,0) IDENTITY ( 1,1 ) ,
 	n_cantidad           decimal(18,0)  NULL ,
 	item_automovil       decimal(18,0)  NULL ,
 	item_autoparte       decimal(18,0)  NULL 
@@ -230,7 +233,7 @@ go
 CREATE TABLE Sucursal
 ( 
 	d_sucursal           nvarchar(255)  NULL ,
-	c_sucursal           decimal(18,0)  NOT NULL ,
+	c_sucursal           decimal(18,0) IDENTITY ( 1,1 ) ,
 	d_direccion          nvarchar(255)  NULL ,
 	d_mail               nvarchar(255)  NULL ,
 	n_telefono           decimal(18,0)  NULL ,
@@ -501,3 +504,60 @@ ALTER TABLE Stock_Sucursal
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
 go
+
+
+GO
+CREATE PROCEDURE Ins_Automovil
+AS 
+BEGIN
+INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor)
+SELECT AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR
+FROM GD2C2020.gd_esquema.Maestra
+where (AUTO_PATENTE IS NOT NULL) AND (AUTO_FECHA_ALTA IS NOT NULL) AND (AUTO_CANT_KMS IS NOT NULL) AND  (AUTO_NRO_CHASIS IS NOT NULL) AND (AUTO_NRO_MOTOR IS NOT NULL)
+END
+GO
+
+GO
+CREATE PROCEDURE Ins_Autoparte
+AS 
+BEGIN
+INSERT INTO Autoparte (c_autoparte, d_autoparte)
+SELECT DISTINCT AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION
+FROM GD2C2020.gd_esquema.Maestra
+where (AUTO_PARTE_CODIGO IS NOT NULL) AND (AUTO_PARTE_DESCRIPCION IS NOT NULL) 
+group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION
+END
+GO
+
+---  RUBRO NO ESTA EN LA TABLA MAESTRA --
+
+GO
+CREATE PROCEDURE Ins_Cliente
+AS 
+BEGIN
+INSERT INTO Cliente(d_apellido, d_nombre, n_dni, f_nacimiento, d_mail, d_direccion)
+SELECT CLIENTE_APELLIDO, CLIENTE_NOMBRE, CLIENTE_DNI, CLIENTE_FECHA_NAC, CLIENTE_MAIL, CLIENTE_DIRECCION
+FROM GD2C2020.gd_esquema.Maestra
+where (CLIENTE_APELLIDO IS NOT NULL) AND (CLIENTE_NOMBRE IS NOT NULL) AND (CLIENTE_DNI IS NOT NULL)
+ AND (CLIENTE_FECHA_NAC IS NOT NULL) AND (CLIENTE_MAIL IS NOT NULL) AND (CLIENTE_DIRECCION IS NOT NULL)
+END
+GO
+
+
+
+SELECT * FROM Automovil
+
+select * from GD2C2020.gd_esquema.Maestra
+
+
+SELECT * FROM Autoparte
+order by c_autoparte
+
+SELECT * FROM Cliente
+
+EXEC Ins_Automovil
+
+EXEC Ins_Autoparte
+
+EXEC Ins_Cliente
+

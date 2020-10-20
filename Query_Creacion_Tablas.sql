@@ -12,6 +12,7 @@ USE TPGDD2C2020
 
 -- CREACION DE TABLAS --
 
+
 CREATE TABLE Automovil
 ( 
 	c_automovil          decimal(18,0) IDENTITY ( 1,1 ) ,
@@ -23,13 +24,13 @@ CREATE TABLE Automovil
 	c_modelo             decimal(18,0)  NULL ,
 	n_motor              nvarchar(50)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Automovil
 	ADD CONSTRAINT XPKAutomovil PRIMARY KEY  CLUSTERED (c_automovil ASC)
-GO
+go
 
 
 
@@ -43,28 +44,28 @@ CREATE TABLE Autoparte
 	c_modelo             decimal(18,0)  NULL ,
 	d_autoparte          nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Autoparte
 	ADD CONSTRAINT XPKAutoparte PRIMARY KEY  CLUSTERED (c_autoparte ASC)
-GO
+go
 
 
 
-CREATE TABLE Categoria_Rubro
+CREATE TABLE Categoría_Rubro
 ( 
 	c_rubro              decimal(18,0) IDENTITY ( 1,1 ) ,
 	d_rubro              nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
-ALTER TABLE Categoria_Rubro
-	ADD CONSTRAINT XPKCategoria_Rubro PRIMARY KEY  CLUSTERED (c_rubro ASC)
-GO
+ALTER TABLE Categoría_Rubro
+	ADD CONSTRAINT XPKCategoría_Rubro PRIMARY KEY  CLUSTERED (c_rubro ASC)
+go
 
 
 
@@ -78,13 +79,13 @@ CREATE TABLE Cliente
 	d_mail               nvarchar(255)  NULL ,
 	d_direccion          nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Cliente
 	ADD CONSTRAINT XPKCliente PRIMARY KEY  CLUSTERED (c_cliente ASC)
-GO
+go
 
 
 
@@ -97,22 +98,22 @@ CREATE TABLE Factura_Venta
 	c_sucursal           decimal(18,0)  NULL ,
 	d_cliente_apellido   nvarchar(255)  NULL ,
 	d_cliente_nombre     nvarchar(255)  NULL ,
-	d_cliente_direccion  nvarchar(255)  NULL ,
 	f_cliente_fecha_nac  datetime2(3)  NULL ,
 	n_cliente_dni        decimal(18,0)  NULL ,
 	d_cliente_mail       nvarchar(255)  NULL ,
 	d_sucursal_direccion nvarchar(255)  NULL ,
 	d_sucursal_mail      nvarchar(255)  NULL ,
 	n_sucursal_telefono  decimal(18,0)  NULL ,
-	d_sucursal_ciudad    nvarchar(255)  NULL 
+	d_sucursal_ciudad    nvarchar(255)  NULL ,
+	d_cliente_direccion  nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Factura_Venta
 	ADD CONSTRAINT XPKFactura_Venta PRIMARY KEY  CLUSTERED (c_venta ASC)
-GO
+go
 
 
 
@@ -121,15 +122,15 @@ CREATE TABLE Item_automovil_compra
 	c_item_automovil_compra decimal(18,0) IDENTITY ( 1,1 ) ,
 	c_compra             decimal(18,0)  NOT NULL ,
 	n_importe            decimal(18,2)  NULL ,
-	c_autoparte          decimal(18,0)  NULL 
+	c_automovil          decimal(18,0)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Item_automovil_compra
 	ADD CONSTRAINT XPKItem_automovil_compra PRIMARY KEY  CLUSTERED (c_item_automovil_compra ASC,c_compra ASC)
-GO
+go
 
 
 
@@ -140,13 +141,13 @@ CREATE TABLE Item_automovil_venta
 	c_automovil          decimal(18,0)  NULL ,
 	c_venta              decimal(18,0)  NOT NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Item_automovil_venta
 	ADD CONSTRAINT XPKItem_automovil_venta PRIMARY KEY  CLUSTERED (c_item_automovil_venta ASC,c_venta ASC)
-GO
+go
 
 
 
@@ -155,16 +156,16 @@ CREATE TABLE Item_autoparte_compra
 	c_item_autoparte_compra decimal(18,0) IDENTITY ( 1,1 ) ,
 	c_compra             decimal(18,0)  NOT NULL ,
 	n_importe            decimal(18,2)  NULL ,
-	n_cantidad           decimal(18,0)  NULL ,
-	c_automovil          decimal(18,0)  NULL 
+	c_autoparte          decimal(18,0)  NULL ,
+	n_cantidad           decimal(18,0)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Item_autoparte_compra
 	ADD CONSTRAINT XPKItem_autoparte_compra PRIMARY KEY  CLUSTERED (c_item_autoparte_compra ASC,c_compra ASC)
-GO
+go
 
 
 
@@ -176,13 +177,13 @@ CREATE TABLE Item_autoparte_venta
 	c_autoparte          decimal(18,0)  NULL ,
 	c_venta              decimal(18,0)  NOT NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Item_autoparte_venta
 	ADD CONSTRAINT XPKItem_autoparte_venta PRIMARY KEY  CLUSTERED (c_item_autoparte_venta ASC,c_venta ASC)
-GO
+go
 
 
 
@@ -196,13 +197,13 @@ CREATE TABLE Modelo
 	c_motor              decimal(18,0)  NULL ,
 	c_caja               decimal(18,0)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Modelo
 	ADD CONSTRAINT XPKModelo PRIMARY KEY  CLUSTERED (c_modelo ASC)
-GO
+go
 
 
 
@@ -213,15 +214,14 @@ CREATE TABLE Orden_compra
 	n_importe_total      decimal(18,0)  NULL ,
 	c_cliente            decimal(18,0)  NULL ,
 	c_sucursal           decimal(18,0)  NULL 
-
 )
-GO
+go
 
 
 
 ALTER TABLE Orden_compra
 	ADD CONSTRAINT XPKOrden_compra PRIMARY KEY  CLUSTERED (c_compra ASC)
-GO
+go
 
 
 
@@ -232,32 +232,31 @@ CREATE TABLE Stock_Sucursal
 	item_automovil       decimal(18,0)  NULL ,
 	item_autoparte       decimal(18,0)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Stock_Sucursal
 	ADD CONSTRAINT XPKStock_Sucursal PRIMARY KEY  CLUSTERED (c_sucursal ASC)
-GO
+go
 
 
 
 CREATE TABLE Sucursal
 ( 
-	d_sucursal           nvarchar(255)  NULL ,
 	c_sucursal           decimal(18,0) IDENTITY ( 1,1 ) ,
 	d_direccion          nvarchar(255)  NULL ,
 	d_mail               nvarchar(255)  NULL ,
 	n_telefono           decimal(18,0)  NULL ,
 	d_ciudad             nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Sucursal
 	ADD CONSTRAINT XPKSucursal PRIMARY KEY  CLUSTERED (c_sucursal ASC)
-GO
+go
 
 
 
@@ -266,13 +265,13 @@ CREATE TABLE Tipo_caja
 	c_caja               decimal(18,0)  NOT NULL ,
 	d_caja               nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Tipo_caja
 	ADD CONSTRAINT XPKTipo_caja PRIMARY KEY  CLUSTERED (c_caja ASC)
-GO
+go
 
 
 
@@ -281,13 +280,13 @@ CREATE TABLE Tipo_carroceria
 	c_carroceria         decimal(18,0)  NOT NULL ,
 	d_carroceria         nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Tipo_carroceria
 	ADD CONSTRAINT XPKTipo_carroceria PRIMARY KEY  CLUSTERED (c_carroceria ASC)
-GO
+go
 
 
 
@@ -296,13 +295,13 @@ CREATE TABLE Tipo_motor
 	c_motor              decimal(18,0)  NOT NULL ,
 	d_motor              nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Tipo_motor
 	ADD CONSTRAINT XPKTipo_motor PRIMARY KEY  CLUSTERED (c_motor ASC)
-GO
+go
 
 
 
@@ -311,13 +310,13 @@ CREATE TABLE Tipo_transmision
 	c_transmision        decimal(18,0)  NOT NULL ,
 	d_transmision        nvarchar(255)  NULL 
 )
-GO
+go
 
 
 
 ALTER TABLE Tipo_transmision
 	ADD CONSTRAINT XPKTipo_transmision PRIMARY KEY  CLUSTERED (c_transmision ASC)
-GO
+go
 
 
 
@@ -326,16 +325,16 @@ ALTER TABLE Automovil
 	ADD CONSTRAINT R_47 FOREIGN KEY (c_modelo) REFERENCES Modelo(c_modelo)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
 
 ALTER TABLE Autoparte
-	ADD CONSTRAINT R_37 FOREIGN KEY (c_rubro) REFERENCES Categoria_Rubro(c_rubro)
+	ADD CONSTRAINT R_37 FOREIGN KEY (c_rubro) REFERENCES Categoría_Rubro(c_rubro)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -344,7 +343,7 @@ ALTER TABLE Autoparte
 	ADD CONSTRAINT R_48 FOREIGN KEY (c_modelo) REFERENCES Modelo(c_modelo)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -353,7 +352,7 @@ ALTER TABLE Factura_Venta
 	ADD CONSTRAINT R_50 FOREIGN KEY (c_cliente) REFERENCES Cliente(c_cliente)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -362,25 +361,25 @@ ALTER TABLE Factura_Venta
 	ADD CONSTRAINT R_52 FOREIGN KEY (c_sucursal) REFERENCES Sucursal(c_sucursal)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
 
 ALTER TABLE Item_automovil_compra
-	ADD CONSTRAINT R_59 FOREIGN KEY (c_compra) REFERENCES Orden_compra(c_compra)
+	ADD CONSTRAINT R_58 FOREIGN KEY (c_compra) REFERENCES Orden_compra(c_compra)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
 
 ALTER TABLE Item_automovil_compra
-	ADD CONSTRAINT R_64 FOREIGN KEY (c_autoparte) REFERENCES Autoparte(c_autoparte)
+	ADD CONSTRAINT R_62 FOREIGN KEY (c_automovil) REFERENCES Automovil(c_automovil)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -389,7 +388,7 @@ ALTER TABLE Item_automovil_venta
 	ADD CONSTRAINT R_40 FOREIGN KEY (c_automovil) REFERENCES Automovil(c_automovil)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -398,25 +397,25 @@ ALTER TABLE Item_automovil_venta
 	ADD CONSTRAINT R_45 FOREIGN KEY (c_venta) REFERENCES Factura_Venta(c_venta)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
 
 ALTER TABLE Item_autoparte_compra
-	ADD CONSTRAINT R_58 FOREIGN KEY (c_compra) REFERENCES Orden_compra(c_compra)
+	ADD CONSTRAINT R_59 FOREIGN KEY (c_compra) REFERENCES Orden_compra(c_compra)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
 
 ALTER TABLE Item_autoparte_compra
-	ADD CONSTRAINT R_62 FOREIGN KEY (c_automovil) REFERENCES Automovil(c_automovil)
+	ADD CONSTRAINT R_64 FOREIGN KEY (c_autoparte) REFERENCES Autoparte(c_autoparte)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -425,7 +424,7 @@ ALTER TABLE Item_autoparte_venta
 	ADD CONSTRAINT R_41 FOREIGN KEY (c_autoparte) REFERENCES Autoparte(c_autoparte)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -434,7 +433,7 @@ ALTER TABLE Item_autoparte_venta
 	ADD CONSTRAINT R_46 FOREIGN KEY (c_venta) REFERENCES Factura_Venta(c_venta)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -443,7 +442,7 @@ ALTER TABLE Modelo
 	ADD CONSTRAINT R_61 FOREIGN KEY (c_transmision) REFERENCES Tipo_transmision(c_transmision)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -452,7 +451,7 @@ ALTER TABLE Modelo
 	ADD CONSTRAINT R_65 FOREIGN KEY (c_carroceria) REFERENCES Tipo_carroceria(c_carroceria)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -461,7 +460,7 @@ ALTER TABLE Modelo
 	ADD CONSTRAINT R_66 FOREIGN KEY (c_motor) REFERENCES Tipo_motor(c_motor)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -470,7 +469,7 @@ ALTER TABLE Modelo
 	ADD CONSTRAINT R_67 FOREIGN KEY (c_caja) REFERENCES Tipo_caja(c_caja)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -479,7 +478,7 @@ ALTER TABLE Orden_compra
 	ADD CONSTRAINT R_51 FOREIGN KEY (c_cliente) REFERENCES Cliente(c_cliente)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -488,7 +487,7 @@ ALTER TABLE Orden_compra
 	ADD CONSTRAINT R_54 FOREIGN KEY (c_sucursal) REFERENCES Sucursal(c_sucursal)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -497,7 +496,7 @@ ALTER TABLE Stock_Sucursal
 	ADD CONSTRAINT R_34 FOREIGN KEY (c_sucursal) REFERENCES Sucursal(c_sucursal)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -506,7 +505,7 @@ ALTER TABLE Stock_Sucursal
 	ADD CONSTRAINT R_39 FOREIGN KEY (item_automovil) REFERENCES Automovil(c_automovil)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
 
 
 
@@ -515,7 +514,8 @@ ALTER TABLE Stock_Sucursal
 	ADD CONSTRAINT R_42 FOREIGN KEY (item_autoparte) REFERENCES Autoparte(c_autoparte)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
-GO
+go
+
 
 -- PROCEDURES MIGRACION DE TABLAS --
 
@@ -523,11 +523,12 @@ GO
 CREATE PROCEDURE Ins_Automovil
 AS 
 BEGIN
-INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor)
-SELECT DISTINCT AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR
+INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo)
+SELECT DISTINCT AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, (SELECT c_modelo FROM Modelo WHERE 
+c_modelo = MODELO_CODIGO )
 FROM GD2C2020.gd_esquema.Maestra
 where (AUTO_PATENTE IS NOT NULL) AND (AUTO_FECHA_ALTA IS NOT NULL) AND (AUTO_CANT_KMS IS NOT NULL) AND  (AUTO_NRO_CHASIS IS NOT NULL) AND (AUTO_NRO_MOTOR IS NOT NULL)
-GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR
+GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, MODELO_CODIGO
 END
 GO
 
@@ -535,11 +536,12 @@ GO
 CREATE PROCEDURE Ins_Autoparte
 AS 
 BEGIN
-INSERT INTO Autoparte (c_autoparte, d_autoparte)
-SELECT DISTINCT AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION
+INSERT INTO Autoparte (c_autoparte, d_autoparte, c_modelo)
+SELECT DISTINCT AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, (SELECT c_modelo FROM Modelo WHERE 
+c_modelo = MODELO_CODIGO )
 FROM GD2C2020.gd_esquema.Maestra
 where (AUTO_PARTE_CODIGO IS NOT NULL) AND (AUTO_PARTE_DESCRIPCION IS NOT NULL) 
-group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION
+group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, MODELO_CODIGO
 END
 GO
 
@@ -596,9 +598,10 @@ GO
 CREATE PROCEDURE Ins_Item_Autoparte_Compra
 AS 
 BEGIN
-INSERT INTO Item_autoparte_compra (n_importe, n_cantidad, c_compra)
+INSERT INTO Item_autoparte_compra (n_importe, n_cantidad, c_compra, c_autoparte)
 SELECT COMPRA_PRECIO, COMPRA_CANT, (SELECT Orden_compra.c_compra FROM Orden_compra WHERE 
-GD2C2020.gd_esquema.Maestra.COMPRA_NRO= Orden_compra.c_compra)
+GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra), (SELECT Autoparte.c_autoparte FROM Autoparte WHERE 
+GD2C2020.gd_esquema.Maestra.AUTO_PARTE_CODIGO = Autoparte.c_autoparte)
 FROM GD2C2020.gd_esquema.Maestra 
 WHERE (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_CANT IS NOT NULL)  AND (SELECT Orden_compra.c_compra FROM Orden_compra WHERE 
 GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra) IS NOT NULL AND FACTURA_NRO IS NULL
@@ -610,9 +613,10 @@ GO
 CREATE PROCEDURE Ins_Item_Automovil_Compra
 AS 
 BEGIN
-INSERT INTO Item_automovil_compra(n_importe, c_compra)
-SELECT COMPRA_PRECIO, (SELECT Orden_compra.c_compra FROM Orden_compra WHERE 
-GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra)
+INSERT INTO Item_automovil_compra(n_importe, c_compra, c_automovil)
+SELECT COMPRA_PRECIO, (SELECT c_compra FROM Orden_compra WHERE 
+c_compra = COMPRA_NRO ), (SELECT c_automovil FROM Automovil WHERE 
+AUTO_PATENTE = d_patente)
 FROM GD2C2020.gd_esquema.Maestra
 where (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_CANT IS NULL) AND (SELECT Orden_compra.c_compra FROM Orden_compra WHERE 
 GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra) IS NOT NULL AND  (FACTURA_NRO IS NULL)
@@ -620,26 +624,34 @@ END
 GO
 
 
-
 GO
 CREATE PROCEDURE Ins_Modelo
 AS 
 BEGIN
-INSERT INTO Modelo(c_modelo, d_nombre, n_potencia)
-SELECT DISTINCT MODELO_CODIGO, MODELO_NOMBRE, MODELO_POTENCIA
+INSERT INTO Modelo(c_modelo, d_nombre, n_potencia, c_caja, c_carroceria, c_motor,c_transmision)
+SELECT DISTINCT MODELO_CODIGO, MODELO_NOMBRE, MODELO_POTENCIA, (SELECT c_caja FROM Tipo_caja WHERE 
+TIPO_CAJA_CODIGO = c_caja), (SELECT c_carroceria FROM Tipo_carroceria WHERE 
+TIPO_AUTO_CODIGO = c_carroceria), (SELECT c_motor FROM Tipo_motor WHERE 
+TIPO_MOTOR_CODIGO = c_motor), (SELECT c_transmision FROM Tipo_transmision WHERE 
+TIPO_TRANSMISION_CODIGO = c_transmision)
 FROM GD2C2020.gd_esquema.Maestra 
-where (MODELO_CODIGO IS NOT NULL) AND (MODELO_NOMBRE IS NOT NULL) AND (MODELO_POTENCIA IS NOT NULL) 
-GROUP BY MODELO_CODIGO, MODELO_NOMBRE, MODELO_POTENCIA
+where (MODELO_CODIGO IS NOT NULL) AND (MODELO_NOMBRE IS NOT NULL) AND (MODELO_POTENCIA IS NOT NULL) AND 
+(TIPO_CAJA_CODIGO IS NOT NULL) AND (TIPO_MOTOR_CODIGO IS NOT NULL) AND  (TIPO_AUTO_CODIGO IS NOT NULL) AND  
+(TIPO_TRANSMISION_CODIGO IS NOT NULL)
+GROUP BY MODELO_CODIGO, MODELO_NOMBRE, MODELO_POTENCIA, TIPO_AUTO_CODIGO, TIPO_CAJA_CODIGO, TIPO_MOTOR_CODIGO, TIPO_TRANSMISION_CODIGO
 END
 GO
+
+
 
 GO
 CREATE PROCEDURE Ins_Item_Automovil_Venta
 AS 
 BEGIN
-INSERT INTO Item_automovil_venta(n_importe, c_venta)
+INSERT INTO Item_automovil_venta(n_importe, c_venta,c_automovil)
 SELECT PRECIO_FACTURADO, (SELECT FACTURA_VENTA.C_VENTA FROM FACTURA_VENTA WHERE 
-GD2C2020.gd_esquema.Maestra.FACTURA_NRO = FACTURA_VENTA.C_VENTA)
+FACTURA_NRO = FACTURA_VENTA.C_VENTA),  (SELECT c_automovil FROM Automovil WHERE 
+AUTO_PATENTE = d_patente)
 FROM GD2C2020.gd_esquema.Maestra
 WHERE PRECIO_FACTURADO IS NOT NULL AND (SELECT FACTURA_VENTA.C_VENTA FROM FACTURA_VENTA WHERE FACTURA_NRO = FACTURA_VENTA.C_VENTA) IS NOT NULL 
 AND CANT_FACTURADA IS NULL 
@@ -650,33 +662,100 @@ GO
 CREATE PROCEDURE Ins_Item_Autoparte_Venta
 AS 
 BEGIN
-INSERT INTO Item_autoparte_venta(n_importe, n_cantidad, c_venta)
+INSERT INTO Item_autoparte_venta(n_importe, n_cantidad, c_venta,c_autoparte)
 SELECT PRECIO_FACTURADO, CANT_FACTURADA, (SELECT FACTURA_VENTA.C_VENTA FROM FACTURA_VENTA WHERE 
-GD2C2020.gd_esquema.Maestra.FACTURA_NRO = FACTURA_VENTA.C_VENTA)
+FACTURA_NRO = FACTURA_VENTA.C_VENTA), (SELECT Autoparte.c_autoparte FROM Autoparte WHERE 
+AUTO_PARTE_CODIGO = Autoparte.c_autoparte)
 FROM GD2C2020.gd_esquema.Maestra
 WHERE PRECIO_FACTURADO IS NOT NULL AND (SELECT FACTURA_VENTA.C_VENTA FROM FACTURA_VENTA WHERE FACTURA_NRO = FACTURA_VENTA.C_VENTA) IS NOT NULL 
 AND (CANT_FACTURADA IS NOT NULL) 
 END
 GO
 
+GO
+CREATE PROCEDURE Ins_Sucursal
+AS 
+BEGIN
+INSERT INTO Sucursal(d_mail, d_direccion, n_telefono, d_ciudad)
+SELECT SUCURSAL_MAIL, SUCURSAL_DIRECCION, SUCURSAL_TELEFONO, SUCURSAL_CIUDAD
+FROM GD2C2020.gd_esquema.Maestra
+WHERE (SUCURSAL_MAIL IS NOT NULL) AND (SUCURSAL_DIRECCION IS NOT NULL) AND (SUCURSAL_TELEFONO IS NOT NULL) AND (SUCURSAL_CIUDAD IS NOT NULL) 
+GROUP BY SUCURSAL_MAIL, SUCURSAL_DIRECCION, SUCURSAL_TELEFONO, SUCURSAL_CIUDAD
+END
+GO
 
-/*select * from Item_automovil_compra
-order by c_compra
+
+GO
+CREATE PROCEDURE Ins_Tipo_Caja
+AS 
+BEGIN
+INSERT INTO Tipo_caja(c_caja,d_caja)
+SELECT TIPO_CAJA_CODIGO, TIPO_CAJA_DESC
+FROM GD2C2020.gd_esquema.Maestra
+WHERE (TIPO_CAJA_CODIGO IS NOT NULL) AND (TIPO_CAJA_DESC IS NOT NULL) 
+GROUP BY TIPO_CAJA_CODIGO, TIPO_CAJA_DESC
+END
+GO
+
+GO
+CREATE PROCEDURE Ins_Tipo_Carroceria
+AS 
+BEGIN
+INSERT INTO Tipo_carroceria(c_carroceria,d_carroceria)
+SELECT TIPO_AUTO_CODIGO, TIPO_AUTO_DESC
+FROM GD2C2020.gd_esquema.Maestra
+WHERE (TIPO_AUTO_CODIGO IS NOT NULL) AND (TIPO_AUTO_DESC IS NOT NULL) 
+GROUP BY TIPO_AUTO_CODIGO, TIPO_AUTO_DESC
+END
+GO
+
+GO
+CREATE PROCEDURE Ins_Tipo_Motor
+AS 
+BEGIN
+INSERT INTO Tipo_motor(c_motor)
+SELECT TIPO_MOTOR_CODIGO
+FROM GD2C2020.gd_esquema.Maestra
+WHERE (TIPO_MOTOR_CODIGO IS NOT NULL) 
+GROUP BY TIPO_MOTOR_CODIGO
+END
+GO
+
+GO
+CREATE PROCEDURE Ins_Tipo_Transmision
+AS 
+BEGIN
+INSERT INTO Tipo_transmision(c_transmision,d_transmision)
+SELECT TIPO_TRANSMISION_CODIGO, TIPO_TRANSMISION_DESC
+FROM GD2C2020.gd_esquema.Maestra
+WHERE (TIPO_TRANSMISION_CODIGO IS NOT NULL) AND (TIPO_TRANSMISION_DESC IS NOT NULL) 
+GROUP BY TIPO_TRANSMISION_CODIGO, TIPO_TRANSMISION_DESC
+END
+GO
+
+
 
 -- EJECUCION DE PROCEDURES --
 
-select * from GD2C2020.gd_esquema.Maestra
-where COMPRA_NRO = '123138'*/
+EXEC Ins_Tipo_Caja
+
+EXEC Ins_Tipo_Carroceria
+
+EXEC Ins_Tipo_Motor
+
+EXEC Ins_Tipo_Transmision
+
+EXEC Ins_Modelo
+
+EXEC Ins_Sucursal
+
+EXEC Ins_Cliente
 
 EXEC Ins_Automovil
 
 EXEC Ins_Autoparte
 
-EXEC Ins_Cliente
-
 EXEC Ins_Factura_Venta
-
-EXEC Ins_Modelo
 
 EXEC Ins_Item_Automovil_Venta
 

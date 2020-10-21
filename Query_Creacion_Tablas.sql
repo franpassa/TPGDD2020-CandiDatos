@@ -521,16 +521,25 @@ go
 
 -- PROCEDURES MIGRACION DE TABLAS --
 
+/* 
+SELECT c_cliente, COUNT(*) FROM Cliente
+GROUP BY c_cliente
+HAVING COUNT(*) > 1
+*/
+
+--select * from GD2C2020.gd_esquema.Maestra WHERE AUTO_PARTE_CODIGO = 1001 order by AUTO_PARTE_CODIGO asc
+--select * from Factura_Venta order by c_cliente
+
 GO
 CREATE PROCEDURE Ins_Automovil
 AS 
 BEGIN
-INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo, d_fabricante_automovil)
+INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo, d_fabricante_automovil,n_precio)
 SELECT DISTINCT AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, (SELECT c_modelo FROM Modelo WHERE 
-c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE
+c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE,COMPRA_PRECIO
 FROM GD2C2020.gd_esquema.Maestra
 where (AUTO_PATENTE IS NOT NULL) AND (AUTO_FECHA_ALTA IS NOT NULL) AND (AUTO_CANT_KMS IS NOT NULL) AND (AUTO_NRO_CHASIS IS NOT NULL) AND (AUTO_NRO_MOTOR IS NOT NULL)
-GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, MODELO_CODIGO, FABRICANTE_NOMBRE
+GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, MODELO_CODIGO, FABRICANTE_NOMBRE, COMPRA_PRECIO
 END
 GO
 
@@ -568,17 +577,18 @@ group by FAC_CLIENTE_APELLIDO, FAC_CLIENTE_NOMBRE, FAC_CLIENTE_DNI, FAC_CLIENTE_
 END
 GO
 
---SELECT * FROM Cliente
 
 GO
 CREATE PROCEDURE Ins_Factura_Venta
 AS 
 BEGIN
 INSERT INTO Factura_Venta(c_venta, f_fecha_fact, d_cliente_apellido, d_cliente_nombre, d_cliente_direccion,
-n_cliente_dni, f_cliente_fecha_nac, d_cliente_mail, d_sucursal_direccion, n_sucursal_telefono, d_sucursal_ciudad, d_sucursal_mail, c_cliente, c_sucursal)
+n_cliente_dni, f_cliente_fecha_nac, d_cliente_mail, d_sucursal_direccion, n_sucursal_telefono, d_sucursal_ciudad, d_sucursal_mail, c_cliente, c_sucursal,
+n_importe_total)
 SELECT DISTINCT FACTURA_NRO, FACTURA_FECHA, FAC_CLIENTE_APELLIDO, FAC_CLIENTE_NOMBRE, FAC_CLIENTE_DIRECCION,
 FAC_CLIENTE_DNI, FAC_CLIENTE_FECHA_NAC, FAC_CLIENTE_MAIL, FAC_SUCURSAL_DIRECCION, FAC_SUCURSAL_TELEFONO, FAC_SUCURSAL_CIUDAD,
-FAC_SUCURSAL_MAIL, (select TOP 1 Cliente.c_cliente from Cliente where Cliente.n_dni = FAC_CLIENTE_DNI), (select c_sucursal from Sucursal where d_direccion = FAC_SUCURSAL_DIRECCION)
+FAC_SUCURSAL_MAIL, (select TOP 1 Cliente.c_cliente from Cliente where Cliente.n_dni = FAC_CLIENTE_DNI), (select c_sucursal from Sucursal where d_direccion = FAC_SUCURSAL_DIRECCION),
+(select sum(PRECIO_FACTURADO))
 FROM GD2C2020.gd_esquema.Maestra
 where (FACTURA_FECHA IS NOT NULL) AND (FACTURA_NRO IS NOT NULL) AND (FAC_CLIENTE_APELLIDO IS NOT NULL)
 AND (FAC_CLIENTE_NOMBRE IS NOT NULL) AND (FAC_CLIENTE_DIRECCION IS NOT NULL) AND (FAC_CLIENTE_DNI IS NOT NULL)
@@ -590,20 +600,14 @@ FAC_SUCURSAL_MAIL
 END
 GO
 
---SELECT * FROM Factura_Venta
-SELECT * FROM Item_automovil_compra
 
-/*
-SELECT c_cliente, COUNT(*) FROM Cliente
-GROUP BY c_cliente
-HAVING COUNT(*) > 1
-*/
+select * from Orden_compra where n_importe_total is not null
 
 GO
 CREATE PROCEDURE Ins_Orden_Compra
 AS 
 BEGIN
-INSERT INTO Orden_compra(c_compra, f_compra,c_sucursal, c_cliente)
+INSERT INTO Orden_compra(c_compra, f_compra, c_sucursal, c_cliente)
 SELECT DISTINCT COMPRA_NRO, COMPRA_FECHA, (select c_sucursal from Sucursal where d_direccion = SUCURSAL_DIRECCION), 
 (select TOP 1 c_cliente from Cliente where n_dni = CLIENTE_DNI)
 FROM GD2C2020.gd_esquema.Maestra 
@@ -612,11 +616,6 @@ AND (CLIENTE_DNI IS NOT NULL)
 GROUP BY COMPRA_NRO, COMPRA_PRECIO, COMPRA_FECHA, SUCURSAL_DIRECCION, CLIENTE_DNI
 END
 GO
-
-SELECT * FROM Orden_compra 
-JOIN Cliente ON  Orden_compra.c_cliente = Cliente.c_cliente
-JOIN Item_autoparte_compra ON Orden_compra.c_compra = Item_autoparte_compra.c_compra
-
 
 GO
 CREATE PROCEDURE Ins_Item_Autoparte_Compra
@@ -662,8 +661,7 @@ where (MODELO_CODIGO IS NOT NULL) AND (MODELO_NOMBRE IS NOT NULL) AND (MODELO_PO
 (TIPO_TRANSMISION_CODIGO IS NOT NULL)
 GROUP BY MODELO_CODIGO, MODELO_NOMBRE, MODELO_POTENCIA, TIPO_AUTO_CODIGO, TIPO_CAJA_CODIGO, TIPO_MOTOR_CODIGO, TIPO_TRANSMISION_CODIGO
 END
-GO
-
+GO 
 
 GO
 CREATE PROCEDURE Ins_Item_Automovil_Venta

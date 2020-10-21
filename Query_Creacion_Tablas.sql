@@ -15,14 +15,15 @@ USE TPGDD2C2020
 
 CREATE TABLE Automovil
 ( 
-	c_automovil          decimal(18,0) IDENTITY ( 1,1 ) ,
-	d_patente            nvarchar(50)  NULL ,
-	f_alta               datetime2(3)  NULL ,
-	n_kilometraje        decimal(18,0)  NULL ,
-	d_chasis             nvarchar(50)  NULL ,
-	n_precio             decimal(18,0)  NULL ,
-	c_modelo             decimal(18,0)  NULL ,
-	n_motor              nvarchar(50)  NULL 
+	c_automovil					decimal(18,0)  IDENTITY ( 1,1 ) ,
+	d_patente					nvarchar(50)   NULL ,
+	f_alta						datetime2(3)   NULL ,
+	n_kilometraje				decimal(18,0)  NULL ,
+	d_chasis					nvarchar(50)   NULL ,
+	n_precio					decimal(18,0)  NULL ,
+	c_modelo					decimal(18,0)  NULL ,
+	d_fabricante_automovil		nvarchar(255)  NULL ,
+	n_motor						nvarchar(50)   NULL 
 )
 go
 
@@ -36,13 +37,13 @@ go
 
 CREATE TABLE Autoparte
 ( 
-	c_autoparte          decimal(18,0)  NOT NULL ,
-	d_fabricante         nvarchar(255)  NULL ,
-	n_precio             decimal(18,2)  NULL ,
-	c_rubro              decimal(18,0)  NULL ,
-	d_ciudad_origen      nvarchar(255)  NULL ,
-	c_modelo             decimal(18,0)  NULL ,
-	d_autoparte          nvarchar(255)  NULL 
+	c_autoparte					 decimal(18,0)  NOT NULL ,
+	d_fabricante_autoparte		 nvarchar(255)  NULL ,
+	n_precio					 decimal(18,2)  NULL ,
+	c_rubro						 decimal(18,0)  NULL ,
+	d_ciudad_origen				 nvarchar(255)  NULL ,
+	c_modelo					 decimal(18,0)  NULL ,
+	d_autoparte					 nvarchar(255)  NULL 
 )
 go
 
@@ -75,7 +76,7 @@ CREATE TABLE Cliente
 	d_apellido           nvarchar(255)  NULL ,
 	d_nombre             nvarchar(255)  NULL ,
 	n_dni                decimal(18,0)  NULL ,
-	f_nacimiento         datetime2(3)  NULL ,
+	f_nacimiento         datetime2(3)   NULL ,
 	d_mail               nvarchar(255)  NULL ,
 	d_direccion          nvarchar(255)  NULL 
 )
@@ -91,21 +92,22 @@ go
 
 CREATE TABLE Factura_Venta
 ( 
-	n_importe_total      decimal(18,2)  NULL ,
+	
 	c_venta              decimal(18,0)  NOT NULL ,
-	f_fecha_fact         datetime2(3)  NULL ,
+	f_fecha_fact         datetime2(3)   NULL ,
 	c_cliente            decimal(18,0)  NULL ,
 	c_sucursal           decimal(18,0)  NULL ,
 	d_cliente_apellido   nvarchar(255)  NULL ,
 	d_cliente_nombre     nvarchar(255)  NULL ,
-	f_cliente_fecha_nac  datetime2(3)  NULL ,
+	f_cliente_fecha_nac  datetime2(3)   NULL ,
 	n_cliente_dni        decimal(18,0)  NULL ,
 	d_cliente_mail       nvarchar(255)  NULL ,
 	d_sucursal_direccion nvarchar(255)  NULL ,
 	d_sucursal_mail      nvarchar(255)  NULL ,
 	n_sucursal_telefono  decimal(18,0)  NULL ,
 	d_sucursal_ciudad    nvarchar(255)  NULL ,
-	d_cliente_direccion  nvarchar(255)  NULL 
+	d_cliente_direccion  nvarchar(255)  NULL ,
+	n_importe_total      decimal(18,2)  NULL 
 )
 go
 
@@ -136,10 +138,10 @@ go
 
 CREATE TABLE Item_automovil_venta
 ( 
-	n_importe            decimal(18,2)  NULL ,
+	n_importe            decimal(18,2)   NULL ,
 	c_item_automovil_venta decimal(18,0) IDENTITY ( 1,1 ) ,
-	c_automovil          decimal(18,0)  NULL ,
-	c_venta              decimal(18,0)  NOT NULL 
+	c_automovil          decimal(18,0)   NULL ,
+	c_venta              decimal(18,0)   NOT NULL 
 )
 go
 
@@ -523,12 +525,12 @@ GO
 CREATE PROCEDURE Ins_Automovil
 AS 
 BEGIN
-INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo)
+INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo, d_fabricante_automovil)
 SELECT DISTINCT AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, (SELECT c_modelo FROM Modelo WHERE 
-c_modelo = MODELO_CODIGO )
+c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE
 FROM GD2C2020.gd_esquema.Maestra
-where (AUTO_PATENTE IS NOT NULL) AND (AUTO_FECHA_ALTA IS NOT NULL) AND (AUTO_CANT_KMS IS NOT NULL) AND  (AUTO_NRO_CHASIS IS NOT NULL) AND (AUTO_NRO_MOTOR IS NOT NULL)
-GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, MODELO_CODIGO
+where (AUTO_PATENTE IS NOT NULL) AND (AUTO_FECHA_ALTA IS NOT NULL) AND (AUTO_CANT_KMS IS NOT NULL) AND (AUTO_NRO_CHASIS IS NOT NULL) AND (AUTO_NRO_MOTOR IS NOT NULL)
+GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, MODELO_CODIGO, FABRICANTE_NOMBRE
 END
 GO
 
@@ -536,38 +538,47 @@ GO
 CREATE PROCEDURE Ins_Autoparte
 AS 
 BEGIN
-INSERT INTO Autoparte (c_autoparte, d_autoparte, c_modelo)
+INSERT INTO Autoparte (c_autoparte, d_autoparte, c_modelo, d_fabricante_autoparte)
 SELECT DISTINCT AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, (SELECT c_modelo FROM Modelo WHERE 
-c_modelo = MODELO_CODIGO )
+c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE
 FROM GD2C2020.gd_esquema.Maestra
-where (AUTO_PARTE_CODIGO IS NOT NULL) AND (AUTO_PARTE_DESCRIPCION IS NOT NULL) 
-group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, MODELO_CODIGO
+where (AUTO_PARTE_CODIGO IS NOT NULL) AND (AUTO_PARTE_DESCRIPCION IS NOT NULL) and FABRICANTE_NOMBRE IS NOT NULL 
+group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, MODELO_CODIGO, FABRICANTE_NOMBRE
 END
 GO
-
----  RUBRO NO ESTA EN LA TABLA MAESTRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA --
 
 GO
 CREATE PROCEDURE Ins_Cliente
 AS 
 BEGIN
 INSERT INTO Cliente(d_apellido, d_nombre, n_dni, f_nacimiento, d_mail, d_direccion)
-SELECT CLIENTE_APELLIDO, CLIENTE_NOMBRE, CLIENTE_DNI, CLIENTE_FECHA_NAC, CLIENTE_MAIL, CLIENTE_DIRECCION
+SELECT DISTINCT CLIENTE_APELLIDO, CLIENTE_NOMBRE, CLIENTE_DNI, CLIENTE_FECHA_NAC, CLIENTE_MAIL, CLIENTE_DIRECCION
 FROM GD2C2020.gd_esquema.Maestra
 where (CLIENTE_APELLIDO IS NOT NULL) AND (CLIENTE_NOMBRE IS NOT NULL) AND (CLIENTE_DNI IS NOT NULL)
- AND (CLIENTE_FECHA_NAC IS NOT NULL) AND (CLIENTE_MAIL IS NOT NULL) AND (CLIENTE_DIRECCION IS NOT NULL)
+AND (CLIENTE_FECHA_NAC IS NOT NULL) AND (CLIENTE_MAIL IS NOT NULL) AND (CLIENTE_DIRECCION IS NOT NULL)
+group by CLIENTE_APELLIDO, CLIENTE_NOMBRE, CLIENTE_DNI, CLIENTE_FECHA_NAC, CLIENTE_MAIL, CLIENTE_DIRECCION
+
+INSERT INTO Cliente(d_apellido, d_nombre, n_dni, f_nacimiento, d_mail, d_direccion)
+SELECT DISTINCT FAC_CLIENTE_APELLIDO, FAC_CLIENTE_NOMBRE, FAC_CLIENTE_DNI, FAC_CLIENTE_FECHA_NAC, FAC_CLIENTE_MAIL, FAC_CLIENTE_DIRECCION
+FROM GD2C2020.gd_esquema.Maestra
+where (FAC_CLIENTE_APELLIDO IS NOT NULL) AND (FAC_CLIENTE_NOMBRE IS NOT NULL) AND (FAC_CLIENTE_DNI IS NOT NULL)
+AND (FAC_CLIENTE_FECHA_NAC IS NOT NULL) AND (FAC_CLIENTE_MAIL IS NOT NULL) AND (FAC_CLIENTE_DIRECCION IS NOT NULL)
+group by FAC_CLIENTE_APELLIDO, FAC_CLIENTE_NOMBRE, FAC_CLIENTE_DNI, FAC_CLIENTE_FECHA_NAC, FAC_CLIENTE_MAIL, FAC_CLIENTE_DIRECCION
+
 END
 GO
+
+--SELECT * FROM Cliente
 
 GO
 CREATE PROCEDURE Ins_Factura_Venta
 AS 
 BEGIN
 INSERT INTO Factura_Venta(c_venta, f_fecha_fact, d_cliente_apellido, d_cliente_nombre, d_cliente_direccion,
-n_cliente_dni, f_cliente_fecha_nac, d_cliente_mail, d_sucursal_direccion, n_sucursal_telefono, d_sucursal_ciudad, d_sucursal_mail)
+n_cliente_dni, f_cliente_fecha_nac, d_cliente_mail, d_sucursal_direccion, n_sucursal_telefono, d_sucursal_ciudad, d_sucursal_mail, c_cliente, c_sucursal)
 SELECT DISTINCT FACTURA_NRO, FACTURA_FECHA, FAC_CLIENTE_APELLIDO, FAC_CLIENTE_NOMBRE, FAC_CLIENTE_DIRECCION,
 FAC_CLIENTE_DNI, FAC_CLIENTE_FECHA_NAC, FAC_CLIENTE_MAIL, FAC_SUCURSAL_DIRECCION, FAC_SUCURSAL_TELEFONO, FAC_SUCURSAL_CIUDAD,
-FAC_SUCURSAL_MAIL
+FAC_SUCURSAL_MAIL, (select TOP 1 Cliente.c_cliente from Cliente where Cliente.n_dni = FAC_CLIENTE_DNI), (select c_sucursal from Sucursal where d_direccion = FAC_SUCURSAL_DIRECCION)
 FROM GD2C2020.gd_esquema.Maestra
 where (FACTURA_FECHA IS NOT NULL) AND (FACTURA_NRO IS NOT NULL) AND (FAC_CLIENTE_APELLIDO IS NOT NULL)
 AND (FAC_CLIENTE_NOMBRE IS NOT NULL) AND (FAC_CLIENTE_DIRECCION IS NOT NULL) AND (FAC_CLIENTE_DNI IS NOT NULL)
@@ -579,19 +590,32 @@ FAC_SUCURSAL_MAIL
 END
 GO
 
+--SELECT * FROM Factura_Venta
+SELECT * FROM Item_automovil_compra
+
+/*
+SELECT c_cliente, COUNT(*) FROM Cliente
+GROUP BY c_cliente
+HAVING COUNT(*) > 1
+*/
 
 GO
 CREATE PROCEDURE Ins_Orden_Compra
 AS 
 BEGIN
-INSERT INTO Orden_compra(c_compra, f_compra)
-SELECT DISTINCT COMPRA_NRO, COMPRA_FECHA
+INSERT INTO Orden_compra(c_compra, f_compra,c_sucursal, c_cliente)
+SELECT DISTINCT COMPRA_NRO, COMPRA_FECHA, (select c_sucursal from Sucursal where d_direccion = SUCURSAL_DIRECCION), 
+(select TOP 1 c_cliente from Cliente where n_dni = CLIENTE_DNI)
 FROM GD2C2020.gd_esquema.Maestra 
-where (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_FECHA IS NOT NULL) AND (COMPRA_NRO IS NOT NULL)
-GROUP BY COMPRA_NRO, COMPRA_PRECIO, COMPRA_FECHA
+where (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_FECHA IS NOT NULL) AND (COMPRA_NRO IS NOT NULL) AND (SUCURSAL_DIRECCION IS NOT NULL)
+AND (CLIENTE_DNI IS NOT NULL)
+GROUP BY COMPRA_NRO, COMPRA_PRECIO, COMPRA_FECHA, SUCURSAL_DIRECCION, CLIENTE_DNI
 END
 GO
 
+SELECT * FROM Orden_compra 
+JOIN Cliente ON  Orden_compra.c_cliente = Cliente.c_cliente
+JOIN Item_autoparte_compra ON Orden_compra.c_compra = Item_autoparte_compra.c_compra
 
 
 GO
@@ -599,15 +623,14 @@ CREATE PROCEDURE Ins_Item_Autoparte_Compra
 AS 
 BEGIN
 INSERT INTO Item_autoparte_compra (n_importe, n_cantidad, c_compra, c_autoparte)
-SELECT COMPRA_PRECIO, COMPRA_CANT, (SELECT Orden_compra.c_compra FROM Orden_compra WHERE 
-GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra), (SELECT Autoparte.c_autoparte FROM Autoparte WHERE 
-GD2C2020.gd_esquema.Maestra.AUTO_PARTE_CODIGO = Autoparte.c_autoparte)
+SELECT COMPRA_PRECIO, COMPRA_CANT, (SELECT c_compra FROM Orden_compra WHERE 
+COMPRA_NRO = c_compra), (SELECT c_autoparte FROM Autoparte WHERE 
+AUTO_PARTE_CODIGO = c_autoparte)
 FROM GD2C2020.gd_esquema.Maestra 
-WHERE (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_CANT IS NOT NULL)  AND (SELECT Orden_compra.c_compra FROM Orden_compra WHERE 
-GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra) IS NOT NULL AND FACTURA_NRO IS NULL
+WHERE (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_CANT IS NOT NULL)  AND (SELECT c_compra FROM Orden_compra WHERE 
+COMPRA_NRO = c_compra) IS NOT NULL AND FACTURA_NRO IS NULL
 END
 GO
-
 
 GO
 CREATE PROCEDURE Ins_Item_Automovil_Compra
@@ -622,7 +645,6 @@ where (COMPRA_PRECIO IS NOT NULL) AND (COMPRA_CANT IS NULL) AND (SELECT Orden_co
 GD2C2020.gd_esquema.Maestra.COMPRA_NRO = Orden_compra.c_compra) IS NOT NULL AND  (FACTURA_NRO IS NULL)
 END
 GO
-
 
 GO
 CREATE PROCEDURE Ins_Modelo
@@ -643,12 +665,11 @@ END
 GO
 
 
-
 GO
 CREATE PROCEDURE Ins_Item_Automovil_Venta
 AS 
 BEGIN
-INSERT INTO Item_automovil_venta(n_importe, c_venta,c_automovil)
+INSERT INTO Item_automovil_venta(n_importe, c_venta, c_automovil)
 SELECT PRECIO_FACTURADO, (SELECT FACTURA_VENTA.C_VENTA FROM FACTURA_VENTA WHERE 
 FACTURA_NRO = FACTURA_VENTA.C_VENTA),  (SELECT c_automovil FROM Automovil WHERE 
 AUTO_PATENTE = d_patente)
@@ -662,7 +683,7 @@ GO
 CREATE PROCEDURE Ins_Item_Autoparte_Venta
 AS 
 BEGIN
-INSERT INTO Item_autoparte_venta(n_importe, n_cantidad, c_venta,c_autoparte)
+INSERT INTO Item_autoparte_venta(n_importe, n_cantidad, c_venta, c_autoparte)
 SELECT PRECIO_FACTURADO, CANT_FACTURADA, (SELECT FACTURA_VENTA.C_VENTA FROM FACTURA_VENTA WHERE 
 FACTURA_NRO = FACTURA_VENTA.C_VENTA), (SELECT Autoparte.c_autoparte FROM Autoparte WHERE 
 AUTO_PARTE_CODIGO = Autoparte.c_autoparte)
@@ -732,7 +753,6 @@ WHERE (TIPO_TRANSMISION_CODIGO IS NOT NULL) AND (TIPO_TRANSMISION_DESC IS NOT NU
 GROUP BY TIPO_TRANSMISION_CODIGO, TIPO_TRANSMISION_DESC
 END
 GO
-
 
 
 -- EJECUCION DE PROCEDURES --

@@ -13,17 +13,18 @@ USE TPGDD2C2020
 -- CREACION DE TABLAS --
 
 
+
 CREATE TABLE Automovil
 ( 
-	c_automovil					decimal(18,0)  IDENTITY ( 1,1 ) ,
-	d_patente					nvarchar(50)   NULL ,
-	f_alta						datetime2(3)   NULL ,
-	n_kilometraje				decimal(18,0)  NULL ,
-	d_chasis					nvarchar(50)   NULL ,
-	n_precio					decimal(18,0)  NULL ,
-	c_modelo					decimal(18,0)  NULL ,
-	d_fabricante_automovil		nvarchar(255)  NULL ,
-	n_motor						nvarchar(50)   NULL 
+	c_automovil          decimal(18,0) IDENTITY ( 1,1 ) ,
+	d_patente            nvarchar(50)  NULL ,
+	f_alta               datetime2(3)  NULL ,
+	n_kilometraje        decimal(18,0)  NULL ,
+	d_chasis             nvarchar(50)  NULL ,
+	n_precio             decimal(18,0)  NULL ,
+	c_modelo             decimal(18,0)  NULL ,
+	n_motor              nvarchar(50)  NULL ,
+	d_fabricante_automovil nvarchar(255)  NULL 
 )
 go
 
@@ -37,13 +38,13 @@ go
 
 CREATE TABLE Autoparte
 ( 
-	c_autoparte					 decimal(18,0)  NOT NULL ,
-	d_fabricante_autoparte		 nvarchar(255)  NULL ,
-	n_precio					 decimal(18,2)  NULL ,
-	c_rubro						 decimal(18,0)  NULL ,
-	d_ciudad_origen				 nvarchar(255)  NULL ,
-	c_modelo					 decimal(18,0)  NULL ,
-	d_autoparte					 nvarchar(255)  NULL 
+	c_autoparte          decimal(18,0)  NOT NULL ,
+	d_fabricante_autoparte nvarchar(255)  NULL ,
+	n_precio             decimal(18,2)  NULL ,
+	c_rubro              decimal(18,0)  NULL ,
+	d_ciudad_origen      nvarchar(255)  NULL ,
+	c_modelo             decimal(18,0)  NULL ,
+	d_autoparte          nvarchar(255)  NULL 
 )
 go
 
@@ -76,7 +77,7 @@ CREATE TABLE Cliente
 	d_apellido           nvarchar(255)  NULL ,
 	d_nombre             nvarchar(255)  NULL ,
 	n_dni                decimal(18,0)  NULL ,
-	f_nacimiento         datetime2(3)   NULL ,
+	f_nacimiento         datetime2(3)  NULL ,
 	d_mail               nvarchar(255)  NULL ,
 	d_direccion          nvarchar(255)  NULL 
 )
@@ -92,22 +93,21 @@ go
 
 CREATE TABLE Factura_Venta
 ( 
-	
+	n_importe_total      decimal(18,2)  NULL ,
 	c_venta              decimal(18,0)  NOT NULL ,
-	f_fecha_fact         datetime2(3)   NULL ,
+	f_fecha_fact         datetime2(3)  NULL ,
 	c_cliente            decimal(18,0)  NULL ,
 	c_sucursal           decimal(18,0)  NULL ,
 	d_cliente_apellido   nvarchar(255)  NULL ,
 	d_cliente_nombre     nvarchar(255)  NULL ,
-	f_cliente_fecha_nac  datetime2(3)   NULL ,
+	f_cliente_fecha_nac  datetime2(3)  NULL ,
 	n_cliente_dni        decimal(18,0)  NULL ,
 	d_cliente_mail       nvarchar(255)  NULL ,
 	d_sucursal_direccion nvarchar(255)  NULL ,
 	d_sucursal_mail      nvarchar(255)  NULL ,
 	n_sucursal_telefono  decimal(18,0)  NULL ,
 	d_sucursal_ciudad    nvarchar(255)  NULL ,
-	d_cliente_direccion  nvarchar(255)  NULL ,
-	n_importe_total      decimal(18,2)  NULL 
+	d_cliente_direccion  nvarchar(255)  NULL 
 )
 go
 
@@ -138,10 +138,10 @@ go
 
 CREATE TABLE Item_automovil_venta
 ( 
-	n_importe            decimal(18,2)   NULL ,
+	n_importe            decimal(18,2)  NULL ,
 	c_item_automovil_venta decimal(18,0) IDENTITY ( 1,1 ) ,
-	c_automovil          decimal(18,0)   NULL ,
-	c_venta              decimal(18,0)   NOT NULL 
+	c_automovil          decimal(18,0)  NULL ,
+	c_venta              decimal(18,0)  NOT NULL 
 )
 go
 
@@ -228,18 +228,19 @@ go
 
 
 CREATE TABLE Stock_Sucursal
-( 
-	c_sucursal           decimal(18,0) IDENTITY ( 1,1 ) ,
+(       
+    c_stock_sucursal     decimal(18,0) IDENTITY ( 1,1 ), 
+	c_sucursal           decimal(18,0)  NULL ,
 	n_cantidad           decimal(18,0)  NULL ,
-	item_automovil       decimal(18,0)  NULL ,
-	item_autoparte       decimal(18,0)  NULL 
+	c_automovil          decimal(18,0)  NULL ,
+	c_autoparte          decimal(18,0)  NULL 
+	
 )
 go
 
 
-
 ALTER TABLE Stock_Sucursal
-	ADD CONSTRAINT XPKStock_Sucursal PRIMARY KEY  CLUSTERED (c_sucursal ASC)
+	ADD CONSTRAINT XPKStock_Sucursal PRIMARY KEY  CLUSTERED (c_stock_sucursal ASC)
 go
 
 
@@ -504,7 +505,7 @@ go
 
 
 ALTER TABLE Stock_Sucursal
-	ADD CONSTRAINT R_39 FOREIGN KEY (item_automovil) REFERENCES Automovil(c_automovil)
+	ADD CONSTRAINT R_39 FOREIGN KEY (c_automovil) REFERENCES Automovil(c_automovil)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
 go
@@ -513,10 +514,11 @@ go
 
 
 ALTER TABLE Stock_Sucursal
-	ADD CONSTRAINT R_42 FOREIGN KEY (item_autoparte) REFERENCES Autoparte(c_autoparte)
+	ADD CONSTRAINT R_42 FOREIGN KEY (c_autoparte) REFERENCES Autoparte(c_autoparte)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
 go
+
 
 
 -- PROCEDURES MIGRACION DE TABLAS --

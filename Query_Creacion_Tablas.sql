@@ -521,15 +521,6 @@ go
 
 -- PROCEDURES MIGRACION DE TABLAS --
 
-/* 
-SELECT c_cliente, COUNT(*) FROM Cliente
-GROUP BY c_cliente
-HAVING COUNT(*) > 1
-*/
-
---select * from GD2C2020.gd_esquema.Maestra WHERE AUTO_PARTE_CODIGO = 1001 order by AUTO_PARTE_CODIGO asc
---select * from Factura_Venta order by c_cliente
-
 GO
 CREATE PROCEDURE Ins_Automovil
 AS 
@@ -583,12 +574,10 @@ CREATE PROCEDURE Ins_Factura_Venta
 AS 
 BEGIN
 INSERT INTO Factura_Venta(c_venta, f_fecha_fact, d_cliente_apellido, d_cliente_nombre, d_cliente_direccion,
-n_cliente_dni, f_cliente_fecha_nac, d_cliente_mail, d_sucursal_direccion, n_sucursal_telefono, d_sucursal_ciudad, d_sucursal_mail, c_cliente, c_sucursal,
-n_importe_total)
+n_cliente_dni, f_cliente_fecha_nac, d_cliente_mail, d_sucursal_direccion, n_sucursal_telefono, d_sucursal_ciudad, d_sucursal_mail, c_cliente, c_sucursal)
 SELECT DISTINCT FACTURA_NRO, FACTURA_FECHA, FAC_CLIENTE_APELLIDO, FAC_CLIENTE_NOMBRE, FAC_CLIENTE_DIRECCION,
 FAC_CLIENTE_DNI, FAC_CLIENTE_FECHA_NAC, FAC_CLIENTE_MAIL, FAC_SUCURSAL_DIRECCION, FAC_SUCURSAL_TELEFONO, FAC_SUCURSAL_CIUDAD,
-FAC_SUCURSAL_MAIL, (select TOP 1 Cliente.c_cliente from Cliente where Cliente.n_dni = FAC_CLIENTE_DNI), (select c_sucursal from Sucursal where d_direccion = FAC_SUCURSAL_DIRECCION),
-(select sum(PRECIO_FACTURADO))
+FAC_SUCURSAL_MAIL, (select TOP 1 Cliente.c_cliente from Cliente where Cliente.n_dni = FAC_CLIENTE_DNI), (select c_sucursal from Sucursal where d_direccion = FAC_SUCURSAL_DIRECCION)
 FROM GD2C2020.gd_esquema.Maestra
 where (FACTURA_FECHA IS NOT NULL) AND (FACTURA_NRO IS NOT NULL) AND (FAC_CLIENTE_APELLIDO IS NOT NULL)
 AND (FAC_CLIENTE_NOMBRE IS NOT NULL) AND (FAC_CLIENTE_DIRECCION IS NOT NULL) AND (FAC_CLIENTE_DNI IS NOT NULL)
@@ -599,9 +588,6 @@ FAC_CLIENTE_DNI, FAC_CLIENTE_FECHA_NAC, FAC_CLIENTE_MAIL, FAC_SUCURSAL_DIRECCION
 FAC_SUCURSAL_MAIL
 END
 GO
-
-
-select * from Orden_compra where n_importe_total is not null
 
 GO
 CREATE PROCEDURE Ins_Orden_Compra
@@ -752,7 +738,21 @@ GROUP BY TIPO_TRANSMISION_CODIGO, TIPO_TRANSMISION_DESC
 END
 GO
 
-
+GO
+CREATE PROCEDURE Ins_Importe_Total_Factura_Venta
+AS
+BEGIN
+UPDATE Factura_Venta SET n_importe_total = 
+(SELECT SUM(n_cantidad*n_importe) FROM Item_autoparte_venta
+WHERE c_venta = Factura_Venta.c_venta 
+GROUP BY c_venta)
+UPDATE Factura_Venta SET n_importe_total = 
+(SELECT n_importe*1.2 FROM Item_automovil_venta
+WHERE c_venta = Factura_Venta.c_venta)
+WHERE n_importe_total IS NULL
+END
+GO
+ 
 -- EJECUCION DE PROCEDURES --
 
 EXEC Ins_Tipo_Caja
@@ -785,3 +785,4 @@ EXEC Ins_Item_Automovil_Compra
 
 EXEC Ins_Item_Autoparte_Compra
 
+EXEC Ins_Importe_Total_Factura_Venta

@@ -213,7 +213,7 @@ CREATE TABLE Orden_compra
 ( 
 	c_compra             decimal(18,0)  NOT NULL ,
 	f_compra             datetime2(3)  NULL ,
-	n_importe_total      decimal(18,0)  NULL ,
+	n_importe_total      decimal(18,2)  NULL ,
 	c_cliente            decimal(18,0)  NULL ,
 	c_sucursal           decimal(18,0)  NULL 
 )
@@ -525,11 +525,12 @@ GO
 CREATE PROCEDURE Ins_Automovil
 AS 
 BEGIN
-INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo, d_fabricante_automovil,n_precio)
+INSERT INTO Automovil (d_patente, f_alta, n_kilometraje, d_chasis, n_motor, c_modelo, d_fabricante_automovil, n_precio)
 SELECT DISTINCT AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, (SELECT c_modelo FROM Modelo WHERE 
-c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE,COMPRA_PRECIO
+c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE, COMPRA_PRECIO
 FROM GD2C2020.gd_esquema.Maestra
 where (AUTO_PATENTE IS NOT NULL) AND (AUTO_FECHA_ALTA IS NOT NULL) AND (AUTO_CANT_KMS IS NOT NULL) AND (AUTO_NRO_CHASIS IS NOT NULL) AND (AUTO_NRO_MOTOR IS NOT NULL)
+AND (COMPRA_PRECIO IS NOT NULL)
 GROUP BY AUTO_PATENTE, AUTO_FECHA_ALTA, AUTO_CANT_KMS, AUTO_NRO_CHASIS, AUTO_NRO_MOTOR, MODELO_CODIGO, FABRICANTE_NOMBRE, COMPRA_PRECIO
 END
 GO
@@ -538,12 +539,12 @@ GO
 CREATE PROCEDURE Ins_Autoparte
 AS 
 BEGIN
-INSERT INTO Autoparte (c_autoparte, d_autoparte, c_modelo, d_fabricante_autoparte)
+INSERT INTO Autoparte (c_autoparte, d_autoparte, c_modelo, d_fabricante_autoparte, n_precio)
 SELECT DISTINCT AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, (SELECT c_modelo FROM Modelo WHERE 
-c_modelo = MODELO_CODIGO ), FABRICANTE_NOMBRE
+c_modelo = MODELO_CODIGO), FABRICANTE_NOMBRE, COMPRA_PRECIO
 FROM GD2C2020.gd_esquema.Maestra
-where (AUTO_PARTE_CODIGO IS NOT NULL) AND (AUTO_PARTE_DESCRIPCION IS NOT NULL) and FABRICANTE_NOMBRE IS NOT NULL 
-group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, MODELO_CODIGO, FABRICANTE_NOMBRE
+where (AUTO_PARTE_CODIGO IS NOT NULL) AND (AUTO_PARTE_DESCRIPCION IS NOT NULL) AND (FABRICANTE_NOMBRE IS NOT NULL ) AND (COMPRA_PRECIO IS NOT NULL )
+group by AUTO_PARTE_CODIGO, AUTO_PARTE_DESCRIPCION, MODELO_CODIGO, FABRICANTE_NOMBRE, COMPRA_PRECIO
 END
 GO
 
@@ -752,7 +753,23 @@ WHERE c_venta = Factura_Venta.c_venta)
 WHERE n_importe_total IS NULL
 END
 GO
- 
+
+GO
+CREATE PROCEDURE Ins_Importe_Total_Orden_Compra
+AS
+BEGIN
+UPDATE Orden_compra SET n_importe_total = 
+(SELECT SUM(n_cantidad*n_importe) FROM Item_autoparte_compra
+WHERE c_compra = Orden_compra.c_compra
+GROUP BY c_compra)
+UPDATE Orden_compra SET n_importe_total = 
+(SELECT n_importe FROM Item_automovil_compra
+WHERE c_compra = Orden_compra.c_compra)
+WHERE n_importe_total IS NULL
+END
+GO
+
+
 -- EJECUCION DE PROCEDURES --
 
 EXEC Ins_Tipo_Caja
@@ -786,3 +803,6 @@ EXEC Ins_Item_Automovil_Compra
 EXEC Ins_Item_Autoparte_Compra
 
 EXEC Ins_Importe_Total_Factura_Venta
+
+EXEC Ins_Importe_Total_Orden_Compra
+

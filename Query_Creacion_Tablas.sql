@@ -229,11 +229,11 @@ go
 
 CREATE TABLE Stock_Sucursal
 (       
-    c_stock_sucursal     decimal(18,0) IDENTITY ( 1,1 ), 
-	c_sucursal           decimal(18,0)  NULL ,
-	n_cantidad           decimal(18,0)  NULL ,
-	c_automovil          decimal(18,0)  NULL ,
-	c_autoparte          decimal(18,0)  NULL 
+    c_stock_sucursal		decimal(18,0) IDENTITY ( 1,1 ), 
+	c_sucursal				decimal(18,0)  NULL ,
+	n_cantidad_autopartes   decimal(18,0)  NULL ,
+	c_automovil				decimal(18,0)  NULL ,
+	c_autoparte				decimal(18,0)  NULL 
 	
 )
 go

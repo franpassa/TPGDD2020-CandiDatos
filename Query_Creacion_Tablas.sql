@@ -750,7 +750,7 @@ GROUP BY c_venta)
 UPDATE Factura_Venta SET n_importe_total = 
 (SELECT n_importe*1.2 FROM Item_automovil_venta
 WHERE c_venta = Factura_Venta.c_venta)
-WHERE n_importe_total IS NULL
+WHERE Factura_Venta.c_venta IN (SELECT c_venta FROM Item_automovil_venta)
 END
 GO
 
@@ -765,10 +765,9 @@ GROUP BY c_compra)
 UPDATE Orden_compra SET n_importe_total = 
 (SELECT n_importe FROM Item_automovil_compra
 WHERE c_compra = Orden_compra.c_compra)
-WHERE n_importe_total IS NULL
+WHERE Orden_compra.c_compra IN (SELECT c_compra FROM Item_automovil_compra)
 END
 GO
-
 
 -- EJECUCION DE PROCEDURES --
 

@@ -771,6 +771,15 @@ WHERE Orden_compra.c_compra IN (SELECT c_compra FROM Item_automovil_compra)
 END
 GO
 
+GO
+CREATE PROCEDURE Ins_Stock_Sucursal
+AS
+BEGIN
+INSERT INTO Stock_Sucursal(c_sucursal,c_automovil)
+SELECT c_sucursal FROM Sucursal
+
+SELECT * FROM Stock_Sucursal
+
 -- EJECUCION DE PROCEDURES --
 
 EXEC Ins_Tipo_Caja

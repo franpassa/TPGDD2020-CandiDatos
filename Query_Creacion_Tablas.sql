@@ -1,4 +1,6 @@
 --...................................DROPS POR SI EXISTEN LAS TABLAS.....................................--
+USE GD2C2020
+
 if exists (select * from sys.schemas where name = 'CANDI_DATOS')
 	BEGIN
 		if exists(select * from sys.tables where object_name(object_id)='Item_Automovil_Venta'and schema_name(schema_id)='CANDI_DATOS')
@@ -555,7 +557,6 @@ go
 
 
 -- PROCEDURES MIGRACION DE TABLAS --
-USE GD2C2020
 
 IF EXISTS (SELECT * FROM sysobjects WHERE name='Ins_Automovil' AND type='p')
 	DROP PROCEDURE CANDI_DATOS.Ins_Automovil

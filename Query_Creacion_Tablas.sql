@@ -123,547 +123,485 @@ ELSE
 
 GO 
 
--- CREACION DE TABLAS -- 
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Automovil 
-  ( 
-     c_automovil            decimal(18, 0) IDENTITY ( 1, 1 ), 
-     d_patente              nvarchar(50) NULL, 
-     f_alta                 datetime2(3) NULL, 
-     n_kilometraje          decimal(18, 0) NULL, 
-     d_chasis               nvarchar(50) NULL, 
-     n_precio               decimal(18, 0) NULL, 
-     c_modelo               decimal(18, 0) NULL, 
-     n_motor                nvarchar(50) NULL, 
-     d_fabricante_automovil nvarchar(255) NULL 
-  ) 
+--...................................PROCEDIMIENTOS.....................................-- 
 
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Automovil 
-  ADD CONSTRAINT XPKAutomovil PRIMARY KEY CLUSTERED (c_automovil ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
-  ( 
-     c_autoparte            decimal(18, 0) NOT NULL, 
-     d_fabricante_autoparte nvarchar(255) NULL, 
-     n_precio               decimal(18, 2) NULL, 
-     c_rubro                decimal(18, 0) NULL, 
-     d_ciudad_origen        nvarchar(255) NULL, 
-     c_modelo               decimal(18, 0) NULL, 
-     d_autoparte            nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
-  ADD CONSTRAINT XPKAutoparte PRIMARY KEY CLUSTERED (c_autoparte ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Categoría_Rubro 
-  ( 
-     c_rubro decimal(18, 0) IDENTITY ( 1, 1 ), 
-     d_rubro nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Categoría_Rubro 
-  ADD CONSTRAINT XPKCategoría_Rubro PRIMARY KEY CLUSTERED (c_rubro ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Cliente 
-  ( 
-     c_cliente    decimal(18, 0) IDENTITY ( 1, 1 ), 
-     d_apellido   nvarchar(255) NULL, 
-     d_nombre     nvarchar(255) NULL, 
-     n_dni        decimal(18, 0) NULL, 
-     f_nacimiento datetime2(3) NULL, 
-     d_mail       nvarchar(255) NULL, 
-     d_direccion  nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Cliente 
-  ADD CONSTRAINT XPKCliente PRIMARY KEY CLUSTERED (c_cliente ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
-  ( 
-     n_importe_total      decimal(18, 2) NULL, 
-     c_venta              decimal(18, 0) NOT NULL, 
-     f_fecha_fact         datetime2(3) NULL, 
-     c_cliente            decimal(18, 0) NULL, 
-     c_sucursal           decimal(18, 0) NULL, 
-     d_cliente_apellido   nvarchar(255) NULL, 
-     d_cliente_nombre     nvarchar(255) NULL, 
-     f_cliente_fecha_nac  datetime2(3) NULL, 
-     n_cliente_dni        decimal(18, 0) NULL, 
-     d_cliente_mail       nvarchar(255) NULL, 
-     d_sucursal_direccion nvarchar(255) NULL, 
-     d_sucursal_mail      nvarchar(255) NULL, 
-     n_sucursal_telefono  decimal(18, 0) NULL, 
-     d_sucursal_ciudad    nvarchar(255) NULL, 
-     d_cliente_direccion  nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
-  ADD CONSTRAINT XPKFactura_Venta PRIMARY KEY CLUSTERED (c_venta ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
-  ( 
-     c_item_automovil_compra decimal(18, 0) IDENTITY ( 1, 1 ), 
-     c_compra                decimal(18, 0) NOT NULL, 
-     n_importe               decimal(18, 2) NULL, 
-     c_automovil             decimal(18, 0) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
-  ADD CONSTRAINT XPKItem_automovil_compra PRIMARY KEY CLUSTERED ( 
-  c_item_automovil_compra ASC, c_compra ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
-  ( 
-     n_importe              decimal(18, 2) NULL, 
-     c_item_automovil_venta decimal(18, 0) IDENTITY ( 1, 1 ), 
-     c_automovil            decimal(18, 0) NULL, 
-     c_venta                decimal(18, 0) NOT NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
-  ADD CONSTRAINT XPKItem_automovil_venta PRIMARY KEY CLUSTERED ( 
-  c_item_automovil_venta ASC, c_venta ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
-  ( 
-     c_item_autoparte_compra decimal(18, 0) IDENTITY ( 1, 1 ), 
-     c_compra                decimal(18, 0) NOT NULL, 
-     n_importe               decimal(18, 2) NULL, 
-     c_autoparte             decimal(18, 0) NULL, 
-     n_cantidad              decimal(18, 0) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
-  ADD CONSTRAINT XPKItem_autoparte_compra PRIMARY KEY CLUSTERED ( 
-  c_item_autoparte_compra ASC, c_compra ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
-  ( 
-     n_importe              decimal(18, 2) NULL, 
-     c_item_autoparte_venta decimal(18, 0) IDENTITY ( 1, 1 ), 
-     n_cantidad             decimal(18, 0) NULL, 
-     c_autoparte            decimal(18, 0) NULL, 
-     c_venta                decimal(18, 0) NOT NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
-  ADD CONSTRAINT XPKItem_autoparte_venta PRIMARY KEY CLUSTERED ( 
-  c_item_autoparte_venta ASC, c_venta ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Modelo 
-  ( 
-     c_modelo      decimal(18, 0) NOT NULL, 
-     d_nombre      nvarchar(255) NULL, 
-     n_potencia    decimal(18, 0) NULL, 
-     c_transmision decimal(18, 0) NULL, 
-     c_carroceria  decimal(18, 0) NULL, 
-     c_motor       decimal(18, 0) NULL, 
-     c_caja        decimal(18, 0) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
-  ADD CONSTRAINT XPKModelo PRIMARY KEY CLUSTERED (c_modelo ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
-  ( 
-     c_compra        decimal(18, 0) NOT NULL, 
-     f_compra        datetime2(3) NULL, 
-     n_importe_total decimal(18, 2) NULL, 
-     c_cliente       decimal(18, 0) NULL, 
-     c_sucursal      decimal(18, 0) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
-  ADD CONSTRAINT XPKOrden_compra PRIMARY KEY CLUSTERED (c_compra ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
-  ( 
-     c_stock_sucursal      decimal(18, 0) IDENTITY ( 1, 1 ), 
-     c_sucursal            decimal(18, 0) NULL, 
-     n_cantidad_autopartes decimal(18, 0) NULL, 
-     c_automovil           decimal(18, 0) NULL, 
-     c_autoparte           decimal(18, 0) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
-  ADD CONSTRAINT XPKStock_Sucursal PRIMARY KEY CLUSTERED (c_stock_sucursal ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Sucursal 
-  ( 
-     c_sucursal  decimal(18, 0) IDENTITY ( 1, 1 ), 
-     d_direccion nvarchar(255) NULL, 
-     d_mail      nvarchar(255) NULL, 
-     n_telefono  decimal(18, 0) NULL, 
-     d_ciudad    nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Sucursal 
-  ADD CONSTRAINT XPKSucursal PRIMARY KEY CLUSTERED (c_sucursal ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_caja 
-  ( 
-     c_caja decimal(18, 0) NOT NULL, 
-     d_caja nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_caja 
-  ADD CONSTRAINT XPKTipo_caja PRIMARY KEY CLUSTERED (c_caja ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_carroceria 
-  ( 
-     c_carroceria decimal(18, 0) NOT NULL, 
-     d_carroceria nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_carroceria 
-  ADD CONSTRAINT XPKTipo_carroceria PRIMARY KEY CLUSTERED (c_carroceria ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_motor 
-  ( 
-     c_motor decimal(18, 0) NOT NULL, 
-     d_motor nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_motor 
-  ADD CONSTRAINT XPKTipo_motor PRIMARY KEY CLUSTERED (c_motor ASC) 
-
-go 
-
-CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_transmision 
-  ( 
-     c_transmision decimal(18, 0) NOT NULL, 
-     d_transmision nvarchar(255) NULL 
-  ) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_transmision 
-  ADD CONSTRAINT XPKTipo_transmision PRIMARY KEY CLUSTERED (c_transmision ASC) 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Automovil 
-  ADD CONSTRAINT R_47 FOREIGN KEY (c_modelo) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Modelo(c_modelo) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
-  ADD CONSTRAINT R_37 FOREIGN KEY (c_rubro) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Categoría_Rubro(c_rubro) ON DELETE NO ACTION ON 
-  UPDATE NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
-  ADD CONSTRAINT R_48 FOREIGN KEY (c_modelo) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Modelo(c_modelo) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
-  ADD CONSTRAINT R_50 FOREIGN KEY (c_cliente) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Cliente(c_cliente) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
-  ADD CONSTRAINT R_52 FOREIGN KEY (c_sucursal) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Sucursal(c_sucursal) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
-  ADD CONSTRAINT R_58 FOREIGN KEY (c_compra) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Orden_compra(c_compra) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
-  ADD CONSTRAINT R_62 FOREIGN KEY (c_automovil) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Automovil(c_automovil) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
-  ADD CONSTRAINT R_40 FOREIGN KEY (c_automovil) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Automovil(c_automovil) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
-  ADD CONSTRAINT R_45 FOREIGN KEY (c_venta) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Factura_Venta(c_venta) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
-  ADD CONSTRAINT R_59 FOREIGN KEY (c_compra) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Orden_compra(c_compra) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
-  ADD CONSTRAINT R_64 FOREIGN KEY (c_autoparte) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Autoparte(c_autoparte) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
-  ADD CONSTRAINT R_41 FOREIGN KEY (c_autoparte) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Autoparte(c_autoparte) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
-  ADD CONSTRAINT R_46 FOREIGN KEY (c_venta) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Factura_Venta(c_venta) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
-  ADD CONSTRAINT R_61 FOREIGN KEY (c_transmision) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Tipo_transmision(c_transmision) ON DELETE NO ACTION 
-  ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
-  ADD CONSTRAINT R_65 FOREIGN KEY (c_carroceria) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Tipo_carroceria(c_carroceria) ON DELETE NO ACTION ON 
-  UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
-  ADD CONSTRAINT R_66 FOREIGN KEY (c_motor) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Tipo_motor(c_motor) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
-  ADD CONSTRAINT R_67 FOREIGN KEY (c_caja) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Tipo_caja(c_caja) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
-  ADD CONSTRAINT R_51 FOREIGN KEY (c_cliente) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Cliente(c_cliente) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
-  ADD CONSTRAINT R_54 FOREIGN KEY (c_sucursal) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Sucursal(c_sucursal) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
-  ADD CONSTRAINT R_34 FOREIGN KEY (c_sucursal) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Sucursal(c_sucursal) ON DELETE NO ACTION ON UPDATE NO 
-  ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
-  ADD CONSTRAINT R_39 FOREIGN KEY (c_automovil) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Automovil(c_automovil) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
-ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
-  ADD CONSTRAINT R_42 FOREIGN KEY (c_autoparte) REFERENCES 
-  [GD2C2020].[CANDI_DATOS].Autoparte(c_autoparte) ON DELETE NO ACTION ON UPDATE 
-  NO ACTION 
-
-go 
-
--- PROCEDURES MIGRACION DE TABLAS -- 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Automovil
+-- PROCEDIMIENTO PARA CREAR TABLAS -- 
 
 IF EXISTS (SELECT * 
            FROM   sysobjects 
-           WHERE  NAME = 'Ins_Automovil' 
+           WHERE  NAME = 'Creacion_de_tablas' 
                   AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Automovil 
+  DROP PROCEDURE CANDI_DATOS.Creacion_de_tablas
 
 GO 
 
-CREATE PROCEDURE CANDI_DATOS.Ins_Automovil 
+CREATE PROCEDURE CANDI_DATOS.Creacion_de_tablas
 AS 
-  BEGIN 
-      INSERT INTO Automovil 
-                  (d_patente, 
-                   f_alta, 
-                   n_kilometraje, 
-                   d_chasis, 
-                   n_motor, 
-                   c_modelo, 
-                   d_fabricante_automovil, 
-                   n_precio) 
-      SELECT DISTINCT AUTO_PATENTE, 
-                      AUTO_FECHA_ALTA, 
-                      AUTO_CANT_KMS, 
-                      AUTO_NRO_CHASIS, 
-                      AUTO_NRO_MOTOR, 
-                      (SELECT c_modelo 
-                       FROM   Modelo 
-                       WHERE  c_modelo = MODELO_CODIGO), 
-                      FABRICANTE_NOMBRE, 
-                      COMPRA_PRECIO 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( AUTO_PATENTE IS NOT NULL ) 
-             AND ( AUTO_FECHA_ALTA IS NOT NULL ) 
-             AND ( AUTO_CANT_KMS IS NOT NULL ) 
-             AND ( AUTO_NRO_CHASIS IS NOT NULL ) 
-             AND ( AUTO_NRO_MOTOR IS NOT NULL ) 
-             AND ( COMPRA_PRECIO IS NOT NULL ) 
-      GROUP  BY AUTO_PATENTE, 
-                AUTO_FECHA_ALTA, 
-                AUTO_CANT_KMS, 
-                AUTO_NRO_CHASIS, 
-                AUTO_NRO_MOTOR, 
-                MODELO_CODIGO, 
-                FABRICANTE_NOMBRE, 
-                COMPRA_PRECIO 
-  END 
+	BEGIN
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Automovil 
+		  ( 
+			 c_automovil            decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 d_patente              nvarchar(50) NULL, 
+			 f_alta                 datetime2(3) NULL, 
+			 n_kilometraje          decimal(18, 0) NULL, 
+			 d_chasis               nvarchar(50) NULL, 
+			 n_precio               decimal(18, 0) NULL, 
+			 c_modelo               decimal(18, 0) NULL, 
+			 n_motor                nvarchar(50) NULL, 
+			 d_fabricante_automovil nvarchar(255) NULL 
+		  ) 
 
-GO 
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Automovil 
+		  ADD CONSTRAINT XPKAutomovil PRIMARY KEY CLUSTERED (c_automovil ASC) 
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Autoparte
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
+		  ( 
+			 c_autoparte            decimal(18, 0) NOT NULL, 
+			 d_fabricante_autoparte nvarchar(255) NULL, 
+			 n_precio               decimal(18, 2) NULL, 
+			 c_rubro                decimal(18, 0) NULL, 
+			 d_ciudad_origen        nvarchar(255) NULL, 
+			 c_modelo               decimal(18, 0) NULL, 
+			 d_autoparte            nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
+		  ADD CONSTRAINT XPKAutoparte PRIMARY KEY CLUSTERED (c_autoparte ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Categoría_Rubro 
+		  ( 
+			 c_rubro decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 d_rubro nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Categoría_Rubro 
+		  ADD CONSTRAINT XPKCategoría_Rubro PRIMARY KEY CLUSTERED (c_rubro ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Cliente 
+		  ( 
+			 c_cliente    decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 d_apellido   nvarchar(255) NULL, 
+			 d_nombre     nvarchar(255) NULL, 
+			 n_dni        decimal(18, 0) NULL, 
+			 f_nacimiento datetime2(3) NULL, 
+			 d_mail       nvarchar(255) NULL, 
+			 d_direccion  nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Cliente 
+		  ADD CONSTRAINT XPKCliente PRIMARY KEY CLUSTERED (c_cliente ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
+		  ( 
+			 n_importe_total      decimal(18, 2) NULL, 
+			 c_venta              decimal(18, 0) NOT NULL, 
+			 f_fecha_fact         datetime2(3) NULL, 
+			 c_cliente            decimal(18, 0) NULL, 
+			 c_sucursal           decimal(18, 0) NULL, 
+			 d_cliente_apellido   nvarchar(255) NULL, 
+			 d_cliente_nombre     nvarchar(255) NULL, 
+			 f_cliente_fecha_nac  datetime2(3) NULL, 
+			 n_cliente_dni        decimal(18, 0) NULL, 
+			 d_cliente_mail       nvarchar(255) NULL, 
+			 d_sucursal_direccion nvarchar(255) NULL, 
+			 d_sucursal_mail      nvarchar(255) NULL, 
+			 n_sucursal_telefono  decimal(18, 0) NULL, 
+			 d_sucursal_ciudad    nvarchar(255) NULL, 
+			 d_cliente_direccion  nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
+		  ADD CONSTRAINT XPKFactura_Venta PRIMARY KEY CLUSTERED (c_venta ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
+		  ( 
+			 c_item_automovil_compra decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 c_compra                decimal(18, 0) NOT NULL, 
+			 n_importe               decimal(18, 2) NULL, 
+			 c_automovil             decimal(18, 0) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
+		  ADD CONSTRAINT XPKItem_automovil_compra PRIMARY KEY CLUSTERED ( 
+		  c_item_automovil_compra ASC, c_compra ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
+		  ( 
+			 n_importe              decimal(18, 2) NULL, 
+			 c_item_automovil_venta decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 c_automovil            decimal(18, 0) NULL, 
+			 c_venta                decimal(18, 0) NOT NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
+		  ADD CONSTRAINT XPKItem_automovil_venta PRIMARY KEY CLUSTERED ( 
+		  c_item_automovil_venta ASC, c_venta ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
+		  ( 
+			 c_item_autoparte_compra decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 c_compra                decimal(18, 0) NOT NULL, 
+			 n_importe               decimal(18, 2) NULL, 
+			 c_autoparte             decimal(18, 0) NULL, 
+			 n_cantidad              decimal(18, 0) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
+		  ADD CONSTRAINT XPKItem_autoparte_compra PRIMARY KEY CLUSTERED ( 
+		  c_item_autoparte_compra ASC, c_compra ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
+		  ( 
+			 n_importe              decimal(18, 2) NULL, 
+			 c_item_autoparte_venta decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 n_cantidad             decimal(18, 0) NULL, 
+			 c_autoparte            decimal(18, 0) NULL, 
+			 c_venta                decimal(18, 0) NOT NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
+		  ADD CONSTRAINT XPKItem_autoparte_venta PRIMARY KEY CLUSTERED ( 
+		  c_item_autoparte_venta ASC, c_venta ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Modelo 
+		  ( 
+			 c_modelo      decimal(18, 0) NOT NULL, 
+			 d_nombre      nvarchar(255) NULL, 
+			 n_potencia    decimal(18, 0) NULL, 
+			 c_transmision decimal(18, 0) NULL, 
+			 c_carroceria  decimal(18, 0) NULL, 
+			 c_motor       decimal(18, 0) NULL, 
+			 c_caja        decimal(18, 0) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
+		  ADD CONSTRAINT XPKModelo PRIMARY KEY CLUSTERED (c_modelo ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
+		  ( 
+			 c_compra        decimal(18, 0) NOT NULL, 
+			 f_compra        datetime2(3) NULL, 
+			 n_importe_total decimal(18, 2) NULL, 
+			 c_cliente       decimal(18, 0) NULL, 
+			 c_sucursal      decimal(18, 0) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
+		  ADD CONSTRAINT XPKOrden_compra PRIMARY KEY CLUSTERED (c_compra ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
+		  ( 
+			 c_stock_sucursal      decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 c_sucursal            decimal(18, 0) NULL, 
+			 n_cantidad_autopartes decimal(18, 0) NULL, 
+			 c_automovil           decimal(18, 0) NULL, 
+			 c_autoparte           decimal(18, 0) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
+		  ADD CONSTRAINT XPKStock_Sucursal PRIMARY KEY CLUSTERED (c_stock_sucursal ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Sucursal 
+		  ( 
+			 c_sucursal  decimal(18, 0) IDENTITY ( 1, 1 ), 
+			 d_direccion nvarchar(255) NULL, 
+			 d_mail      nvarchar(255) NULL, 
+			 n_telefono  decimal(18, 0) NULL, 
+			 d_ciudad    nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Sucursal 
+		  ADD CONSTRAINT XPKSucursal PRIMARY KEY CLUSTERED (c_sucursal ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_caja 
+		  ( 
+			 c_caja decimal(18, 0) NOT NULL, 
+			 d_caja nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_caja 
+		  ADD CONSTRAINT XPKTipo_caja PRIMARY KEY CLUSTERED (c_caja ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_carroceria 
+		  ( 
+			 c_carroceria decimal(18, 0) NOT NULL, 
+			 d_carroceria nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_carroceria 
+		  ADD CONSTRAINT XPKTipo_carroceria PRIMARY KEY CLUSTERED (c_carroceria ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_motor 
+		  ( 
+			 c_motor decimal(18, 0) NOT NULL, 
+			 d_motor nvarchar(255) NULL 
+		  ) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_motor 
+		  ADD CONSTRAINT XPKTipo_motor PRIMARY KEY CLUSTERED (c_motor ASC) 
+
+		CREATE TABLE [GD2C2020].[CANDI_DATOS].Tipo_transmision 
+		  ( 
+			 c_transmision decimal(18, 0) NOT NULL, 
+			 d_transmision nvarchar(255) NULL 
+		  ) 
+
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Tipo_transmision 
+		  ADD CONSTRAINT XPKTipo_transmision PRIMARY KEY CLUSTERED (c_transmision ASC) 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Automovil 
+		  ADD CONSTRAINT R_47 FOREIGN KEY (c_modelo) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Modelo(c_modelo) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
+		  ADD CONSTRAINT R_37 FOREIGN KEY (c_rubro) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Categoría_Rubro(c_rubro) ON DELETE NO ACTION ON 
+		  UPDATE NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Autoparte 
+		  ADD CONSTRAINT R_48 FOREIGN KEY (c_modelo) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Modelo(c_modelo) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
+		  ADD CONSTRAINT R_50 FOREIGN KEY (c_cliente) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Cliente(c_cliente) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Factura_Venta 
+		  ADD CONSTRAINT R_52 FOREIGN KEY (c_sucursal) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Sucursal(c_sucursal) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
+		  ADD CONSTRAINT R_58 FOREIGN KEY (c_compra) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Orden_compra(c_compra) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_compra 
+		  ADD CONSTRAINT R_62 FOREIGN KEY (c_automovil) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Automovil(c_automovil) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
+		  ADD CONSTRAINT R_40 FOREIGN KEY (c_automovil) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Automovil(c_automovil) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_automovil_venta 
+		  ADD CONSTRAINT R_45 FOREIGN KEY (c_venta) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Factura_Venta(c_venta) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
+		  ADD CONSTRAINT R_59 FOREIGN KEY (c_compra) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Orden_compra(c_compra) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_compra 
+		  ADD CONSTRAINT R_64 FOREIGN KEY (c_autoparte) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Autoparte(c_autoparte) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
+		  ADD CONSTRAINT R_41 FOREIGN KEY (c_autoparte) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Autoparte(c_autoparte) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Item_autoparte_venta 
+		  ADD CONSTRAINT R_46 FOREIGN KEY (c_venta) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Factura_Venta(c_venta) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
+		  ADD CONSTRAINT R_61 FOREIGN KEY (c_transmision) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Tipo_transmision(c_transmision) ON DELETE NO ACTION 
+		  ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
+		  ADD CONSTRAINT R_65 FOREIGN KEY (c_carroceria) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Tipo_carroceria(c_carroceria) ON DELETE NO ACTION ON 
+		  UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
+		  ADD CONSTRAINT R_66 FOREIGN KEY (c_motor) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Tipo_motor(c_motor) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Modelo 
+		  ADD CONSTRAINT R_67 FOREIGN KEY (c_caja) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Tipo_caja(c_caja) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
+		  ADD CONSTRAINT R_51 FOREIGN KEY (c_cliente) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Cliente(c_cliente) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Orden_compra 
+		  ADD CONSTRAINT R_54 FOREIGN KEY (c_sucursal) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Sucursal(c_sucursal) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION  
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
+		  ADD CONSTRAINT R_34 FOREIGN KEY (c_sucursal) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Sucursal(c_sucursal) ON DELETE NO ACTION ON UPDATE NO 
+		  ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
+		  ADD CONSTRAINT R_39 FOREIGN KEY (c_automovil) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Automovil(c_automovil) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+		ALTER TABLE [GD2C2020].[CANDI_DATOS].Stock_Sucursal 
+		  ADD CONSTRAINT R_42 FOREIGN KEY (c_autoparte) REFERENCES 
+		  [GD2C2020].[CANDI_DATOS].Autoparte(c_autoparte) ON DELETE NO ACTION ON UPDATE 
+		  NO ACTION 
+
+	END
+GO
+
+-- PROCEDIMIENTO PARA INSERTAR DATOS DESDE GD2C2020.gd_esquema.Maestra A LAS TABLAS DE GD2C2020.CANDI_DATOS --
 
 IF EXISTS (SELECT * 
            FROM   sysobjects 
-           WHERE  NAME = 'Ins_Autoparte' 
+           WHERE  NAME = 'Realizar_Migracion' 
                   AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Autoparte 
+  DROP PROCEDURE CANDI_DATOS.Realizar_Migracion 
 
 GO 
 
-CREATE PROCEDURE CANDI_DATOS.Ins_Autoparte 
+CREATE PROCEDURE CANDI_DATOS.Realizar_Migracion 
 AS 
+
+-- Insertar datos desde la Tabla Maestra a la Tabla Tipo_Caja
+
   BEGIN 
-      INSERT INTO Autoparte 
-                  (c_autoparte, 
-                   d_autoparte, 
-                   c_modelo, 
-                   d_fabricante_autoparte, 
-                   n_precio) 
-      SELECT DISTINCT AUTO_PARTE_CODIGO, 
-                      AUTO_PARTE_DESCRIPCION, 
-                      (SELECT c_modelo 
-                       FROM   Modelo 
-                       WHERE  c_modelo = MODELO_CODIGO), 
-                      FABRICANTE_NOMBRE, 
-                      COMPRA_PRECIO 
+      INSERT INTO Tipo_caja 
+                  (c_caja, 
+                   d_caja) 
+      SELECT TIPO_CAJA_CODIGO, 
+             TIPO_CAJA_DESC 
       FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( AUTO_PARTE_CODIGO IS NOT NULL ) 
-             AND ( AUTO_PARTE_DESCRIPCION IS NOT NULL ) 
-             AND ( FABRICANTE_NOMBRE IS NOT NULL ) 
-             AND ( COMPRA_PRECIO IS NOT NULL ) 
-      GROUP  BY AUTO_PARTE_CODIGO, 
-                AUTO_PARTE_DESCRIPCION, 
-                MODELO_CODIGO, 
-                FABRICANTE_NOMBRE, 
-                COMPRA_PRECIO 
+      WHERE  ( TIPO_CAJA_CODIGO IS NOT NULL ) 
+             AND ( TIPO_CAJA_DESC IS NOT NULL ) 
+      GROUP  BY TIPO_CAJA_CODIGO, 
+                TIPO_CAJA_DESC 
   END 
 
-GO 
+-- Insertar datos desde la Tabla Maestra a la Tabla Tipo_Carroceria
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Cliente
+  BEGIN 
+      INSERT INTO Tipo_carroceria 
+                  (c_carroceria, 
+                   d_carroceria) 
+      SELECT TIPO_AUTO_CODIGO, 
+             TIPO_AUTO_DESC 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( TIPO_AUTO_CODIGO IS NOT NULL ) 
+             AND ( TIPO_AUTO_DESC IS NOT NULL ) 
+      GROUP  BY TIPO_AUTO_CODIGO, 
+                TIPO_AUTO_DESC 
+  END 
 
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Cliente' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Cliente 
+-- Insertar datos desde la Tabla Maestra a la Tabla Tipo_Motor
 
-GO 
+  BEGIN 
+      INSERT INTO Tipo_motor 
+                  (c_motor) 
+      SELECT TIPO_MOTOR_CODIGO 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( TIPO_MOTOR_CODIGO IS NOT NULL ) 
+      GROUP  BY TIPO_MOTOR_CODIGO 
+  END 
 
-CREATE PROCEDURE CANDI_DATOS.Ins_Cliente 
-AS 
+-- Insertar datos desde la Tabla Maestra a la Tabla Tipo_Transmision
+
+  BEGIN 
+      INSERT INTO Tipo_transmision 
+                  (c_transmision, 
+                   d_transmision) 
+      SELECT TIPO_TRANSMISION_CODIGO, 
+             TIPO_TRANSMISION_DESC 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( TIPO_TRANSMISION_CODIGO IS NOT NULL ) 
+             AND ( TIPO_TRANSMISION_DESC IS NOT NULL ) 
+      GROUP  BY TIPO_TRANSMISION_CODIGO, 
+                TIPO_TRANSMISION_DESC 
+  END 
+
+  -- Insertar datos desde la Tabla Maestra a la Tabla Modelo
+
+  BEGIN 
+      INSERT INTO Modelo 
+                  (c_modelo, 
+                   d_nombre, 
+                   n_potencia, 
+                   c_caja, 
+                   c_carroceria, 
+                   c_motor, 
+                   c_transmision) 
+      SELECT DISTINCT MODELO_CODIGO, 
+                      MODELO_NOMBRE, 
+                      MODELO_POTENCIA, 
+                      (SELECT c_caja 
+                       FROM   Tipo_caja 
+                       WHERE  TIPO_CAJA_CODIGO = c_caja), 
+                      (SELECT c_carroceria 
+                       FROM   Tipo_carroceria 
+                       WHERE  TIPO_AUTO_CODIGO = c_carroceria), 
+                      (SELECT c_motor 
+                       FROM   Tipo_motor 
+                       WHERE  TIPO_MOTOR_CODIGO = c_motor), 
+                      (SELECT c_transmision 
+                       FROM   Tipo_transmision 
+                       WHERE  TIPO_TRANSMISION_CODIGO = c_transmision) 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( MODELO_CODIGO IS NOT NULL ) 
+             AND ( MODELO_NOMBRE IS NOT NULL ) 
+             AND ( MODELO_POTENCIA IS NOT NULL ) 
+             AND ( TIPO_CAJA_CODIGO IS NOT NULL ) 
+             AND ( TIPO_MOTOR_CODIGO IS NOT NULL ) 
+             AND ( TIPO_AUTO_CODIGO IS NOT NULL ) 
+             AND ( TIPO_TRANSMISION_CODIGO IS NOT NULL ) 
+      GROUP  BY MODELO_CODIGO, 
+                MODELO_NOMBRE, 
+                MODELO_POTENCIA, 
+                TIPO_AUTO_CODIGO, 
+                TIPO_CAJA_CODIGO, 
+                TIPO_MOTOR_CODIGO, 
+                TIPO_TRANSMISION_CODIGO 
+  END 
+
+  -- Insertar datos desde la Tabla Maestra a la Tabla Sucursal
+
+  BEGIN 
+      INSERT INTO Sucursal 
+                  (d_mail, 
+                   d_direccion, 
+                   n_telefono, 
+                   d_ciudad) 
+      SELECT SUCURSAL_MAIL, 
+             SUCURSAL_DIRECCION, 
+             SUCURSAL_TELEFONO, 
+             SUCURSAL_CIUDAD 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( SUCURSAL_MAIL IS NOT NULL ) 
+             AND ( SUCURSAL_DIRECCION IS NOT NULL ) 
+             AND ( SUCURSAL_TELEFONO IS NOT NULL ) 
+             AND ( SUCURSAL_CIUDAD IS NOT NULL ) 
+      GROUP  BY SUCURSAL_MAIL, 
+                SUCURSAL_DIRECCION, 
+                SUCURSAL_TELEFONO, 
+                SUCURSAL_CIUDAD 
+  END 
+
+  -- Insertar datos desde la Tabla Maestra a la Tabla Cliente
+
   BEGIN 
       INSERT INTO Cliente 
                   (d_apellido, 
@@ -720,20 +658,75 @@ AS
                 FAC_CLIENTE_DIRECCION 
   END 
 
-GO 
+  -- Insertar datos desde la Tabla Maesta a la Tabla Automovil
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Factura_Venta
+  BEGIN 
+      INSERT INTO Automovil 
+                  (d_patente, 
+                   f_alta, 
+                   n_kilometraje, 
+                   d_chasis, 
+                   n_motor, 
+                   c_modelo, 
+                   d_fabricante_automovil, 
+                   n_precio) 
+      SELECT DISTINCT AUTO_PATENTE, 
+                      AUTO_FECHA_ALTA, 
+                      AUTO_CANT_KMS, 
+                      AUTO_NRO_CHASIS, 
+                      AUTO_NRO_MOTOR, 
+                      (SELECT c_modelo 
+                       FROM   Modelo 
+                       WHERE  c_modelo = MODELO_CODIGO), 
+                      FABRICANTE_NOMBRE, 
+                      COMPRA_PRECIO 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( AUTO_PATENTE IS NOT NULL ) 
+             AND ( AUTO_FECHA_ALTA IS NOT NULL ) 
+             AND ( AUTO_CANT_KMS IS NOT NULL ) 
+             AND ( AUTO_NRO_CHASIS IS NOT NULL ) 
+             AND ( AUTO_NRO_MOTOR IS NOT NULL ) 
+             AND ( COMPRA_PRECIO IS NOT NULL ) 
+      GROUP  BY AUTO_PATENTE, 
+                AUTO_FECHA_ALTA, 
+                AUTO_CANT_KMS, 
+                AUTO_NRO_CHASIS, 
+                AUTO_NRO_MOTOR, 
+                MODELO_CODIGO, 
+                FABRICANTE_NOMBRE, 
+                COMPRA_PRECIO 
+  END 
 
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Factura_Venta' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Factura_Venta 
+-- Insertar datos desde la Tabla Maestra a la Tabla Autoparte
 
-GO 
+  BEGIN 
+      INSERT INTO Autoparte 
+                  (c_autoparte, 
+                   d_autoparte, 
+                   c_modelo, 
+                   d_fabricante_autoparte, 
+                   n_precio) 
+      SELECT DISTINCT AUTO_PARTE_CODIGO, 
+                      AUTO_PARTE_DESCRIPCION, 
+                      (SELECT c_modelo 
+                       FROM   Modelo 
+                       WHERE  c_modelo = MODELO_CODIGO), 
+                      FABRICANTE_NOMBRE, 
+                      COMPRA_PRECIO 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  ( AUTO_PARTE_CODIGO IS NOT NULL ) 
+             AND ( AUTO_PARTE_DESCRIPCION IS NOT NULL ) 
+             AND ( FABRICANTE_NOMBRE IS NOT NULL ) 
+             AND ( COMPRA_PRECIO IS NOT NULL ) 
+      GROUP  BY AUTO_PARTE_CODIGO, 
+                AUTO_PARTE_DESCRIPCION, 
+                MODELO_CODIGO, 
+                FABRICANTE_NOMBRE, 
+                COMPRA_PRECIO 
+  END 
 
-CREATE PROCEDURE CANDI_DATOS.Ins_Factura_Venta 
-AS 
+-- Insertar datos desde la Tabla Maestra a la Tabla Factura_Venta
+
   BEGIN 
       INSERT INTO Factura_Venta 
                   (c_venta, 
@@ -795,20 +788,54 @@ AS
                 FAC_SUCURSAL_MAIL 
   END 
 
-GO 
+  -- Insertar datos desde la Tabla Maestra a la Tabla Item_Automovil_Venta
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Orden_Compra
+  BEGIN 
+      INSERT INTO Item_automovil_venta 
+                  (n_importe, 
+                   c_venta, 
+                   c_automovil) 
+      SELECT PRECIO_FACTURADO, 
+             (SELECT FACTURA_VENTA.C_VENTA 
+              FROM   FACTURA_VENTA 
+              WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA), 
+             (SELECT c_automovil 
+              FROM   Automovil 
+              WHERE  AUTO_PATENTE = d_patente) 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  PRECIO_FACTURADO IS NOT NULL 
+             AND (SELECT FACTURA_VENTA.C_VENTA 
+                  FROM   FACTURA_VENTA 
+                  WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA) IS NOT NULL 
+             AND CANT_FACTURADA IS NULL 
+  END 
 
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Orden_Compra' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Orden_Compra 
+-- Insertar datos desde la Tabla Maestra a la Tabla Item_Autoparte_Venta
 
-GO 
+  BEGIN 
+      INSERT INTO Item_autoparte_venta 
+                  (n_importe, 
+                   n_cantidad, 
+                   c_venta, 
+                   c_autoparte) 
+      SELECT PRECIO_FACTURADO, 
+             CANT_FACTURADA, 
+             (SELECT FACTURA_VENTA.C_VENTA 
+              FROM   FACTURA_VENTA 
+              WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA), 
+             (SELECT Autoparte.c_autoparte 
+              FROM   Autoparte 
+              WHERE  AUTO_PARTE_CODIGO = Autoparte.c_autoparte) 
+      FROM   GD2C2020.gd_esquema.Maestra 
+      WHERE  PRECIO_FACTURADO IS NOT NULL 
+             AND (SELECT FACTURA_VENTA.C_VENTA 
+                  FROM   FACTURA_VENTA 
+                  WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA) IS NOT NULL 
+             AND ( CANT_FACTURADA IS NOT NULL ) 
+  END 
 
-CREATE PROCEDURE CANDI_DATOS.Ins_Orden_Compra 
-AS 
+-- Insertar datos desde la Tabla Maestra a la Tabla Orden_Compra
+ 
   BEGIN 
       INSERT INTO Orden_compra 
                   (c_compra, 
@@ -836,20 +863,8 @@ AS
                 CLIENTE_DNI 
   END 
 
-GO 
+-- Insertar datos desde la Tabla Maestra a la Tabla Item_Autoparte_Compra
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Item_Autoparte_Compra
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Item_Autoparte_Compra' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Item_Autoparte_Compra 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Item_Autoparte_Compra 
-AS 
   BEGIN 
       INSERT INTO Item_autoparte_compra 
                   (n_importe, 
@@ -873,20 +888,8 @@ AS
              AND FACTURA_NRO IS NULL 
   END 
 
-GO 
+-- Insertar datos desde la Tabla Maestra a la Tabla Item_Automovil_Compra
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Item_Automovil_Compra
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Item_Automovil_Compra' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Item_Automovil_Compra 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Item_Automovil_Compra 
-AS 
   BEGIN 
       INSERT INTO Item_automovil_compra 
                   (n_importe, 
@@ -910,287 +913,11 @@ AS
              AND ( FACTURA_NRO IS NULL ) 
   END 
 
-GO 
+-- Calcular e insertar el importe total de las ventas de las facturas 
 
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Modelo
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Modelo' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Modelo 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Modelo 
-AS 
-  BEGIN 
-      INSERT INTO Modelo 
-                  (c_modelo, 
-                   d_nombre, 
-                   n_potencia, 
-                   c_caja, 
-                   c_carroceria, 
-                   c_motor, 
-                   c_transmision) 
-      SELECT DISTINCT MODELO_CODIGO, 
-                      MODELO_NOMBRE, 
-                      MODELO_POTENCIA, 
-                      (SELECT c_caja 
-                       FROM   Tipo_caja 
-                       WHERE  TIPO_CAJA_CODIGO = c_caja), 
-                      (SELECT c_carroceria 
-                       FROM   Tipo_carroceria 
-                       WHERE  TIPO_AUTO_CODIGO = c_carroceria), 
-                      (SELECT c_motor 
-                       FROM   Tipo_motor 
-                       WHERE  TIPO_MOTOR_CODIGO = c_motor), 
-                      (SELECT c_transmision 
-                       FROM   Tipo_transmision 
-                       WHERE  TIPO_TRANSMISION_CODIGO = c_transmision) 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( MODELO_CODIGO IS NOT NULL ) 
-             AND ( MODELO_NOMBRE IS NOT NULL ) 
-             AND ( MODELO_POTENCIA IS NOT NULL ) 
-             AND ( TIPO_CAJA_CODIGO IS NOT NULL ) 
-             AND ( TIPO_MOTOR_CODIGO IS NOT NULL ) 
-             AND ( TIPO_AUTO_CODIGO IS NOT NULL ) 
-             AND ( TIPO_TRANSMISION_CODIGO IS NOT NULL ) 
-      GROUP  BY MODELO_CODIGO, 
-                MODELO_NOMBRE, 
-                MODELO_POTENCIA, 
-                TIPO_AUTO_CODIGO, 
-                TIPO_CAJA_CODIGO, 
-                TIPO_MOTOR_CODIGO, 
-                TIPO_TRANSMISION_CODIGO 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Item_Automovil_Venta
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Item_Automovil_Venta' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Item_Automovil_Venta 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Item_Automovil_Venta 
-AS 
-  BEGIN 
-      INSERT INTO Item_automovil_venta 
-                  (n_importe, 
-                   c_venta, 
-                   c_automovil) 
-      SELECT PRECIO_FACTURADO, 
-             (SELECT FACTURA_VENTA.C_VENTA 
-              FROM   FACTURA_VENTA 
-              WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA), 
-             (SELECT c_automovil 
-              FROM   Automovil 
-              WHERE  AUTO_PATENTE = d_patente) 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  PRECIO_FACTURADO IS NOT NULL 
-             AND (SELECT FACTURA_VENTA.C_VENTA 
-                  FROM   FACTURA_VENTA 
-                  WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA) IS NOT NULL 
-             AND CANT_FACTURADA IS NULL 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Item_Autoparte_Venta
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Item_Autoparte_Venta' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Item_Autoparte_Venta 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Item_Autoparte_Venta 
-AS 
-  BEGIN 
-      INSERT INTO Item_autoparte_venta 
-                  (n_importe, 
-                   n_cantidad, 
-                   c_venta, 
-                   c_autoparte) 
-      SELECT PRECIO_FACTURADO, 
-             CANT_FACTURADA, 
-             (SELECT FACTURA_VENTA.C_VENTA 
-              FROM   FACTURA_VENTA 
-              WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA), 
-             (SELECT Autoparte.c_autoparte 
-              FROM   Autoparte 
-              WHERE  AUTO_PARTE_CODIGO = Autoparte.c_autoparte) 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  PRECIO_FACTURADO IS NOT NULL 
-             AND (SELECT FACTURA_VENTA.C_VENTA 
-                  FROM   FACTURA_VENTA 
-                  WHERE  FACTURA_NRO = FACTURA_VENTA.C_VENTA) IS NOT NULL 
-             AND ( CANT_FACTURADA IS NOT NULL ) 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Sucursal
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Sucursal' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Sucursal 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Sucursal 
-AS 
-  BEGIN 
-      INSERT INTO Sucursal 
-                  (d_mail, 
-                   d_direccion, 
-                   n_telefono, 
-                   d_ciudad) 
-      SELECT SUCURSAL_MAIL, 
-             SUCURSAL_DIRECCION, 
-             SUCURSAL_TELEFONO, 
-             SUCURSAL_CIUDAD 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( SUCURSAL_MAIL IS NOT NULL ) 
-             AND ( SUCURSAL_DIRECCION IS NOT NULL ) 
-             AND ( SUCURSAL_TELEFONO IS NOT NULL ) 
-             AND ( SUCURSAL_CIUDAD IS NOT NULL ) 
-      GROUP  BY SUCURSAL_MAIL, 
-                SUCURSAL_DIRECCION, 
-                SUCURSAL_TELEFONO, 
-                SUCURSAL_CIUDAD 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Tipo_Caja
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Tipo_Caja' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Tipo_Caja 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Tipo_Caja 
-AS 
-  BEGIN 
-      INSERT INTO Tipo_caja 
-                  (c_caja, 
-                   d_caja) 
-      SELECT TIPO_CAJA_CODIGO, 
-             TIPO_CAJA_DESC 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( TIPO_CAJA_CODIGO IS NOT NULL ) 
-             AND ( TIPO_CAJA_DESC IS NOT NULL ) 
-      GROUP  BY TIPO_CAJA_CODIGO, 
-                TIPO_CAJA_DESC 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Tipo_Carroceria
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Tipo_Carroceria' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Tipo_Carroceria 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Tipo_Carroceria 
-AS 
-  BEGIN 
-      INSERT INTO Tipo_carroceria 
-                  (c_carroceria, 
-                   d_carroceria) 
-      SELECT TIPO_AUTO_CODIGO, 
-             TIPO_AUTO_DESC 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( TIPO_AUTO_CODIGO IS NOT NULL ) 
-             AND ( TIPO_AUTO_DESC IS NOT NULL ) 
-      GROUP  BY TIPO_AUTO_CODIGO, 
-                TIPO_AUTO_DESC 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Tipo_Motor
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Tipo_Motor' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Tipo_Motor 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Tipo_Motor 
-AS 
-  BEGIN 
-      INSERT INTO Tipo_motor 
-                  (c_motor) 
-      SELECT TIPO_MOTOR_CODIGO 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( TIPO_MOTOR_CODIGO IS NOT NULL ) 
-      GROUP  BY TIPO_MOTOR_CODIGO 
-  END 
-
-GO 
-
--- Procedimiento para insertar datos desde la Tabla Maestra a la Tabla Tipo_Transmision
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Tipo_Transmision' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Tipo_Transmision 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Tipo_Transmision 
-AS 
-  BEGIN 
-      INSERT INTO Tipo_transmision 
-                  (c_transmision, 
-                   d_transmision) 
-      SELECT TIPO_TRANSMISION_CODIGO, 
-             TIPO_TRANSMISION_DESC 
-      FROM   GD2C2020.gd_esquema.Maestra 
-      WHERE  ( TIPO_TRANSMISION_CODIGO IS NOT NULL ) 
-             AND ( TIPO_TRANSMISION_DESC IS NOT NULL ) 
-      GROUP  BY TIPO_TRANSMISION_CODIGO, 
-                TIPO_TRANSMISION_DESC 
-  END 
-
-GO 
-
--- Procedimiento para calcular e insertar el importe total de las ventas de las facturas 
-
-IF EXISTS (SELECT NAME 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Importe_Total_Factura_Venta' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Importe_Total_Factura_Venta 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Importe_Total_Factura_Venta 
-AS 
   BEGIN 
       UPDATE Factura_Venta 
-      SET    n_importe_total = (SELECT Sum(n_cantidad * n_importe) 
+      SET    n_importe_total = (SELECT SUM(n_cantidad * n_importe) 
                                 FROM   Item_autoparte_venta 
                                 WHERE  c_venta = Factura_Venta.c_venta 
                                 GROUP  BY c_venta) 
@@ -1203,23 +930,11 @@ AS
                                        FROM   Item_automovil_venta) 
   END 
 
-GO 
+-- Calcular e insertar el importe total de las compras de las ordenes de compra 
 
--- Procedimiento para calcular e insertar el importe total de las compras de las ordenes de compra 
-
-IF EXISTS (SELECT * 
-           FROM   sysobjects 
-           WHERE  NAME = 'Ins_Importe_Total_Orden_Compra' 
-                  AND type = 'p') 
-  DROP PROCEDURE CANDI_DATOS.Ins_Importe_Total_Orden_Compra 
-
-GO 
-
-CREATE PROCEDURE CANDI_DATOS.Ins_Importe_Total_Orden_Compra 
-AS 
   BEGIN 
       UPDATE Orden_compra 
-      SET    n_importe_total = (SELECT Sum(n_cantidad * n_importe) 
+      SET    n_importe_total = (SELECT SUM(n_cantidad * n_importe) 
                                 FROM   Item_autoparte_compra 
                                 WHERE  c_compra = Orden_compra.c_compra 
                                 GROUP  BY c_compra) 
@@ -1235,36 +950,7 @@ AS
 GO 
 
 -- EJECUCION DE PROCEDURES -- 
-EXEC CANDI_DATOS.Ins_Tipo_Caja 
 
-EXEC CANDI_DATOS.Ins_Tipo_Carroceria 
+EXEC CANDI_DATOS.Creacion_de_tablas
 
-EXEC CANDI_DATOS.Ins_Tipo_Motor 
-
-EXEC CANDI_DATOS.Ins_Tipo_Transmision 
-
-EXEC CANDI_DATOS.Ins_Modelo 
-
-EXEC CANDI_DATOS.Ins_Sucursal 
-
-EXEC CANDI_DATOS.Ins_Cliente 
-
-EXEC CANDI_DATOS.Ins_Automovil 
-
-EXEC CANDI_DATOS.Ins_Autoparte 
-
-EXEC CANDI_DATOS.Ins_Factura_Venta 
-
-EXEC CANDI_DATOS.Ins_Item_Automovil_Venta 
-
-EXEC CANDI_DATOS.Ins_Item_Autoparte_Venta 
-
-EXEC CANDI_DATOS.Ins_Orden_Compra 
-
-EXEC CANDI_DATOS.Ins_Item_Automovil_Compra 
-
-EXEC CANDI_DATOS.Ins_Item_Autoparte_Compra 
-
-EXEC CANDI_DATOS.Ins_Importe_Total_Factura_Venta 
-
-EXEC CANDI_DATOS.Ins_Importe_Total_Orden_Compra 
+EXEC CANDI_DATOS.Realizar_Migracion
